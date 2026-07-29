@@ -235,6 +235,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ success: true, cached: false, ...cache });
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Internal Server Error';
+    console.error('Pump scan failed:', message);
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }

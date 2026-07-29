@@ -57,18 +57,19 @@ async function getPumpSignals() {
   // login page to server-to-server requests. Invoking the handler directly keeps
   // the daily scan inside this protected cron Function.
   const response = await runPumpScan(new NextRequest('https://internal.alpha-bot/api/scan-pump?force=1'));
-  if (!response.ok) throw new Error(`Pump scan request failed (${response.status}).`);
   const payload = (await response.json()) as { success?: boolean; results?: PumpResult[]; error?: string };
-  if (!payload.success) throw new Error(payload.error ?? 'Pump scan did not complete.');
+  if (!response.ok || !payload.success) throw new Error(payload.error ?? `Pump scan request failed (${response.status}).`);
   return (payload.results ?? []).slice(0, 5);
 }
 
-function formatDailyDigest(alphaLeaders: AlphaToken[], pumpSignals: PumpResult[], appUrl: string) {
+function formatDailyDigest(alphaLeaders: AlphaToken[], pumpSignals: PumpResult[], appUrl: string, pumpUnavailable: boolean) {
   const date = new Intl.DateTimeFormat('vi-VN', { dateStyle: 'full', timeZone: 'Asia/Ho_Chi_Minh' }).format(new Date());
   const lines = [`<b>⚡ Alpha Bot · Daily Digest</b>`, `<i>${date}</i>`, '', '<b>🔥 Alpha theo volume 24h</b>'];
   lines.push(...alphaLeaders.map((token, index) => `${index + 1}. <b>${escapeTelegramHtml(token.symbol ?? '—')}</b> ${sign(number(token.percentChange24h))} · $${compact(number(token.volume24h))}`));
   lines.push('', '<b>🚀 Pump signals</b>');
-  lines.push(...(pumpSignals.length
+  lines.push(...(pumpUnavailable
+    ? ['⚠️ Pump scanner tạm thời không phản hồi; Alpha leaders vẫn được cập nhật.']
+    : pumpSignals.length
     ? pumpSignals.map((signal, index) => `${index + 1}. <b>${escapeTelegramHtml(signal.symbol)}</b> · score <b>${signal.score.score}</b> · ${escapeTelegramHtml(signal.score.phase)} · ${sign(signal.percentChange24h)}`)
     : ['Chưa có tín hiệu pump vượt ngưỡng hôm nay.']));
   lines.push('', `<a href="${escapeTelegramHtml(appUrl)}">Mở Alpha Bot ↗</a>`);
@@ -86,13 +87,14 @@ export async function GET(request: Request) {
   try {
     const [alphaResult, pumpResult] = await Promise.allSettled([getAlphaLeaders(), getPumpSignals()]);
     if (alphaResult.status === 'rejected') throw new Error(`Alpha source: ${alphaResult.reason instanceof Error ? alphaResult.reason.message : 'unknown error'}`);
-    if (pumpResult.status === 'rejected') throw new Error(`Pump scan: ${pumpResult.reason instanceof Error ? pumpResult.reason.message : 'unknown error'}`);
     const alphaLeaders = alphaResult.value;
-    const pumpSignals = pumpResult.value;
+    const pumpUnavailable = pumpResult.status === 'rejected';
+    if (pumpUnavailable) console.error('Daily Telegram pump scan failed:', pumpResult.reason instanceof Error ? pumpResult.reason.message : 'unknown error');
+    const pumpSignals = pumpUnavailable ? [] : pumpResult.value;
     const appUrl = process.env.APP_URL ?? new URL(request.url).origin;
-    await sendTelegramMessage(formatDailyDigest(alphaLeaders, pumpSignals, appUrl));
+    await sendTelegramMessage(formatDailyDigest(alphaLeaders, pumpSignals, appUrl, pumpUnavailable));
     await redisCommand('SET', lockKey, 'sent', 'EX', String(14 * 24 * 60 * 60));
-    return Response.json({ success: true, alphaTokens: alphaLeaders.length, pumpSignals: pumpSignals.length });
+    return Response.json({ success: true, alphaTokens: alphaLeaders.length, pumpSignals: pumpSignals.length, pumpUnavailable });
   } catch (error) {
     await redisCommand('DEL', lockKey).catch(() => undefined);
     const message = error instanceof Error ? error.message : 'Unable to send daily digest.';
