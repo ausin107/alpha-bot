@@ -79,7 +79,11 @@ export async function GET(request: Request) {
   if (locked !== 'OK') return Response.json({ success: true, skipped: true, reason: 'Daily digest was already sent or is running.' });
 
   try {
-    const [alphaLeaders, pumpSignals] = await Promise.all([getAlphaLeaders(), getPumpSignals(request)]);
+    const [alphaResult, pumpResult] = await Promise.allSettled([getAlphaLeaders(), getPumpSignals(request)]);
+    if (alphaResult.status === 'rejected') throw new Error(`Alpha source: ${alphaResult.reason instanceof Error ? alphaResult.reason.message : 'unknown error'}`);
+    if (pumpResult.status === 'rejected') throw new Error(`Pump scan: ${pumpResult.reason instanceof Error ? pumpResult.reason.message : 'unknown error'}`);
+    const alphaLeaders = alphaResult.value;
+    const pumpSignals = pumpResult.value;
     const appUrl = process.env.APP_URL ?? new URL(request.url).origin;
     await sendTelegramMessage(formatDailyDigest(alphaLeaders, pumpSignals, appUrl));
     await redisCommand('SET', lockKey, 'sent', 'EX', String(14 * 24 * 60 * 60));
@@ -87,6 +91,7 @@ export async function GET(request: Request) {
   } catch (error) {
     await redisCommand('DEL', lockKey).catch(() => undefined);
     const message = error instanceof Error ? error.message : 'Unable to send daily digest.';
+    console.error('Daily Telegram cron failed:', message);
     return Response.json({ success: false, error: message }, { status: 502 });
   }
 }
