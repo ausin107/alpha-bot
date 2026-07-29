@@ -1,3 +1,5 @@
+import { NextRequest } from 'next/server';
+import { GET as runPumpScan } from '@/app/api/scan-pump/route';
 import { escapeTelegramHtml, sendTelegramMessage } from '@/lib/telegram';
 import { redisCommand } from '@/lib/upstash';
 
@@ -50,8 +52,11 @@ async function getAlphaLeaders() {
     .slice(0, 5);
 }
 
-async function getPumpSignals(request: Request) {
-  const response = await fetch(new URL('/api/scan-pump?force=1', request.url), { cache: 'no-store' });
+async function getPumpSignals() {
+  // Do not fetch our own public route: Deployment Protection can return an HTML
+  // login page to server-to-server requests. Invoking the handler directly keeps
+  // the daily scan inside this protected cron Function.
+  const response = await runPumpScan(new NextRequest('https://internal.alpha-bot/api/scan-pump?force=1'));
   if (!response.ok) throw new Error(`Pump scan request failed (${response.status}).`);
   const payload = (await response.json()) as { success?: boolean; results?: PumpResult[]; error?: string };
   if (!payload.success) throw new Error(payload.error ?? 'Pump scan did not complete.');
@@ -79,7 +84,7 @@ export async function GET(request: Request) {
   if (locked !== 'OK') return Response.json({ success: true, skipped: true, reason: 'Daily digest was already sent or is running.' });
 
   try {
-    const [alphaResult, pumpResult] = await Promise.allSettled([getAlphaLeaders(), getPumpSignals(request)]);
+    const [alphaResult, pumpResult] = await Promise.allSettled([getAlphaLeaders(), getPumpSignals()]);
     if (alphaResult.status === 'rejected') throw new Error(`Alpha source: ${alphaResult.reason instanceof Error ? alphaResult.reason.message : 'unknown error'}`);
     if (pumpResult.status === 'rejected') throw new Error(`Pump scan: ${pumpResult.reason instanceof Error ? pumpResult.reason.message : 'unknown error'}`);
     const alphaLeaders = alphaResult.value;
