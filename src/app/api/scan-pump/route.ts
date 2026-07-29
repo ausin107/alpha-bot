@@ -113,6 +113,9 @@ async function readCache() {
 }
 
 async function saveCache(cache: CachedScan) {
+  // Vercel Functions do not have a persistent writable project filesystem.
+  // The cron forces a fresh scan there; local development keeps the existing file cache.
+  if (process.env.VERCEL) return;
   await mkdir(join(process.cwd(), 'data'), { recursive: true });
   const temporaryPath = `${CACHE_PATH}.tmp`;
   await writeFile(temporaryPath, `${JSON.stringify(cache, null, 2)}\n`, 'utf8');
