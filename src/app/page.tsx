@@ -7,11 +7,14 @@ import TokenDetails from '../components/TokenDetails';
 import OnchainAnalysisModal, { OnchainToken } from '../components/OnchainAnalysisModal';
 
 type PumpScanResult = {
-  alphaId: string;
+  source: MarketTab;
+  alphaId?: string;
   tokenId?: string;
-  contractAddress: string;
-  chainId: string;
+  contractAddress?: string;
+  chainId?: string;
   symbol: string;
+  baseAsset: string;
+  quoteAsset: string;
   name: string;
   iconUrl?: string;
   price: number;
@@ -120,6 +123,7 @@ export default function Home() {
   // Pump-pattern scanner states. Results are persisted by the API in data/pump-score-cache.json.
   const [isPumpScanModalOpen, setIsPumpScanModalOpen] = useState<boolean>(false);
   const [isPumpScanning, setIsPumpScanning] = useState<boolean>(false);
+  const [pumpMarket, setPumpMarket] = useState<MarketTab>('alpha');
   const [pumpResults, setPumpResults] = useState<PumpScanResult[] | null>(null);
   const [onchainToken, setOnchainToken] = useState<OnchainToken | null>(null);
   const [pumpScanInfo, setPumpScanInfo] = useState<{ cached: boolean; generatedAt: string; scannedTokens: number; chainFilteredOutTokens: number; futuresFilteredOutTokens: number; filteredOutTokens: number; failedTokens: number; scoreFilteredOutTokens: number } | null>(null);
@@ -134,10 +138,10 @@ export default function Home() {
     setIsScanModalOpen(true);
   };
 
-  const loadPumpScan = async (force = false) => {
+  const loadPumpScan = async (market: MarketTab, force = false) => {
     setIsPumpScanning(true);
     try {
-      const res = await fetch(`/api/scan-pump${force ? '?force=1' : ''}`);
+      const res = await fetch(`/api/scan-pump?market=${market}${force ? '&force=1' : ''}`);
       const json = await res.json();
       if (!res.ok || !json.success) throw new Error(json.error || 'Không thể quét điểm pump');
       setPumpResults(json.results);
@@ -161,8 +165,11 @@ export default function Home() {
   };
 
   const handleScanPump = () => {
+    setPumpMarket(marketTab);
+    setPumpResults(null);
+    setPumpScanInfo(null);
     setIsPumpScanModalOpen(true);
-    if (!pumpResults) void loadPumpScan();
+    void loadPumpScan(marketTab);
   };
 
   const loadShakeoutScan = async (market: MarketTab, force = false) => {
@@ -462,7 +469,7 @@ export default function Home() {
             {isScanMenuOpen && (
               <div className="glass-panel" role="menu" style={{ position: 'absolute', right: 0, top: 'calc(100% + 0.5rem)', zIndex: 50, minWidth: '225px', padding: '0.4rem', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
                 <button className="action-btn" role="menuitem" disabled={marketTab !== 'alpha' || isLoading} onClick={() => { setIsScanMenuOpen(false); handleScanSideways(); }} style={{ justifyContent: 'flex-start', border: 0, color: 'var(--primary-cyan)' }}>🔍 Quét Sideways</button>
-                <button className="action-btn" role="menuitem" disabled={marketTab !== 'alpha' || isLoading} onClick={() => { setIsScanMenuOpen(false); handleScanPump(); }} style={{ justifyContent: 'flex-start', border: 0, color: '#ffd166' }}>⚡ Quét tín hiệu Pump</button>
+                <button className="action-btn" role="menuitem" disabled={isPumpScanning || (marketTab === 'alpha' && isLoading)} onClick={() => { setIsScanMenuOpen(false); handleScanPump(); }} style={{ justifyContent: 'flex-start', border: 0, color: '#ffd166' }}>⚡ Quét tín hiệu Pump {marketTab === 'spot' ? 'Spot' : 'Alpha'}</button>
                 <button className="action-btn" role="menuitem" disabled={isShakeoutScanning} onClick={() => { setIsScanMenuOpen(false); handleScanShakeout(); }} style={{ justifyContent: 'flex-start', border: 0, color: '#d4c2ff' }}>🧭 Quét cấu trúc {marketTab === 'spot' ? 'Spot' : 'Alpha'}</button>
               </div>
             )}
@@ -592,9 +599,17 @@ export default function Home() {
               Tab này chỉ quét các cặp Spot/USDT có Futures Binance đang giao dịch để tìm cấu trúc test pump, bear trap, tái tích luỹ, cạn cung và breakout. Mỗi lần quét lấy tối đa 200 nến ngày/cặp; kết quả được cache riêng.
             </p>
           </div>
-          <div>
+          <div style={{ display: 'flex', gap: '0.6rem', flexWrap: 'wrap' }}>
             <button className="action-btn" onClick={handleScanShakeout} disabled={isShakeoutScanning} style={{ borderColor: '#b18cff', color: '#d4c2ff' }}>
               {isShakeoutScanning ? 'Đang quét Spot...' : '🧭 Quét cấu trúc Spot / USDT'}
+            </button>
+            <button
+              className="action-btn"
+              onClick={handleScanPump}
+              disabled={isPumpScanning}
+              style={{ borderColor: '#ffb800', color: '#ffd166' }}
+            >
+              {isPumpScanning ? 'Đang quét Pump...' : '⚡ Quét tín hiệu Pump Spot'}
             </button>
           </div>
         </section>
@@ -724,14 +739,16 @@ export default function Home() {
             <div style={{ borderBottom: '1px solid var(--border-color)', paddingBottom: '0.9rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', gap: '1rem', alignItems: 'flex-start', flexWrap: 'wrap' }}>
                 <div>
-                  <h2 style={{ fontSize: '1.4rem', color: 'var(--text-primary)' }}>⚡ Xếp hạng chu kỳ, Pre-pump & On-chain</h2>
+                  <h2 style={{ fontSize: '1.4rem', color: 'var(--text-primary)' }}>⚡ Xếp hạng chu kỳ & tín hiệu Pump — {pumpMarket === 'spot' ? 'Binance Spot / USDT' : 'Binance Alpha'}</h2>
                   <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginTop: '4px', maxWidth: '680px' }}>
-                    Chỉ quét BSC (chain 56), có Futures Binance đang giao dịch, vốn hoá $2M–$200M và volume 24h trên $100K. Danh sách cuối chỉ giữ token có điểm trên 50/100; mỗi token có thể quét on-chain riêng trong 3 ngày gần nhất.
+                    {pumpMarket === 'spot'
+                      ? 'Quét các cặp Spot/USDT đang giao dịch, volume 24h trên $5M và có Futures Binance. Danh sách chỉ giữ các cặp có điểm trên 50/100.'
+                      : 'Chỉ quét BSC (chain 56), có Futures Binance đang giao dịch, vốn hoá $2M–$200M và volume 24h trên $100K. Danh sách cuối chỉ giữ token có điểm trên 50/100; mỗi token có thể quét on-chain riêng trong 3 ngày gần nhất.'}
                   </p>
                 </div>
                 <button
                   className="action-btn"
-                  onClick={() => void loadPumpScan(true)}
+                  onClick={() => void loadPumpScan(pumpMarket, true)}
                   disabled={isPumpScanning}
                   style={{ fontSize: '0.78rem', padding: '0.45rem 0.75rem' }}
                 >
@@ -740,7 +757,7 @@ export default function Home() {
               </div>
               {pumpScanInfo && (
                 <div style={{ marginTop: '0.75rem', fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-                  {pumpScanInfo.cached ? 'Đang dùng kết quả đã lưu' : 'Đã tính và lưu kết quả mới'} · {pumpScanInfo.scannedTokens} token BSC Futures đạt điều kiện đầu vào · loại {pumpScanInfo.chainFilteredOutTokens} token khác mạng · loại {pumpScanInfo.filteredOutTokens} token theo vốn hoá/volume · loại {pumpScanInfo.futuresFilteredOutTokens} token không có Futures Binance · bỏ qua {pumpScanInfo.failedTokens} token thiếu dữ liệu · ẩn {pumpScanInfo.scoreFilteredOutTokens} token điểm ≤50 · cập nhật {new Date(pumpScanInfo.generatedAt).toLocaleString('vi-VN')}
+                  {pumpScanInfo.cached ? 'Đang dùng kết quả đã lưu' : 'Đã tính và lưu kết quả mới'} · quét {pumpScanInfo.scannedTokens} {pumpMarket === 'spot' ? 'cặp Spot/USDT' : 'token BSC'} có Futures Binance · {pumpMarket === 'alpha' && <>loại {pumpScanInfo.chainFilteredOutTokens} token khác mạng · </>}loại {pumpScanInfo.filteredOutTokens} {pumpMarket === 'spot' ? 'cặp có volume thấp' : 'token theo vốn hoá/volume'} · loại {pumpScanInfo.futuresFilteredOutTokens} {pumpMarket === 'spot' ? 'cặp' : 'token'} không có Futures Binance · bỏ qua {pumpScanInfo.failedTokens} {pumpMarket === 'spot' ? 'cặp' : 'token'} thiếu dữ liệu · ẩn {pumpScanInfo.scoreFilteredOutTokens} {pumpMarket === 'spot' ? 'cặp' : 'token'} điểm ≤50 · cập nhật {new Date(pumpScanInfo.generatedAt).toLocaleString('vi-VN')}
                 </div>
               )}
             </div>
@@ -748,7 +765,7 @@ export default function Home() {
             {isPumpScanning ? (
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '4rem 1rem', gap: '0.75rem' }}>
                 <div className="pulse-animation" style={{ fontSize: '2.5rem' }}>⚡</div>
-                <div style={{ fontWeight: 'bold', color: '#ffd166' }}>Đang tải tối đa 200 nến ngày và chấm điểm toàn bộ token Alpha...</div>
+                <div style={{ fontWeight: 'bold', color: '#ffd166' }}>Đang tải tối đa 200 nến ngày và chấm điểm toàn bộ {pumpMarket === 'spot' ? 'cặp Spot/USDT' : 'token Alpha'}...</div>
                 <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', textAlign: 'center' }}>Kết quả sẽ được lưu để các lần mở sau không phải tải và tính lại.</div>
               </div>
             ) : pumpResults && pumpResults.length > 0 ? (
@@ -788,13 +805,14 @@ export default function Home() {
                           : `NGẮN ${metrics.historyDays}D`;
                       return (
                         <tr
-                          key={result.alphaId}
+                          key={`${result.source}-${result.symbol}`}
                           onClick={() => {
+                            if (result.source !== 'alpha') return;
                             setIsPumpScanModalOpen(false);
                             handleSelectFromScan(result);
                           }}
                           className="scan-row-hover"
-                          style={{ borderBottom: '1px solid rgba(255,255,255,0.03)', cursor: 'pointer' }}
+                          style={{ borderBottom: '1px solid rgba(255,255,255,0.03)', cursor: result.source === 'alpha' ? 'pointer' : 'default' }}
                         >
                           <td style={{ padding: '0.75rem', fontFamily: 'monospace' }}>{index + 1}</td>
                           <td style={{ padding: '0.75rem' }}>
@@ -824,36 +842,45 @@ export default function Home() {
                           <td style={{ padding: '0.75rem', color: metrics.return3d <= 0 ? 'var(--trend-down)' : 'var(--trend-up)' }}>{metrics.return3d >= 0 ? '+' : ''}{(metrics.return3d * 100).toFixed(1)}%</td>
                           <td style={{ padding: '0.75rem', textAlign: 'right' }}>
                             <div style={{ display: 'inline-flex', gap: '0.4rem' }}>
-                              <button
-                                className="action-btn"
-                                style={{ fontSize: '0.7rem', padding: '0.2rem 0.55rem' }}
-                                onClick={(event) => {
-                                  event.stopPropagation();
-                                  setIsPumpScanModalOpen(false);
-                                  handleSelectFromScan(result);
-                                }}
-                              >
-                                Xem chart
-                              </button>
-                              <button
-                                className="action-btn"
-                                disabled={!/^0x[a-fA-F0-9]{40}$/.test(result.contractAddress)}
-                                title={/^0x[a-fA-F0-9]{40}$/.test(result.contractAddress) ? 'Quét các giao dịch on-chain > $100K' : 'Binance không trả về contract hợp lệ cho token này'}
-                                style={{ fontSize: '0.7rem', padding: '0.2rem 0.55rem', borderColor: '#ffb800', color: '#ffd166' }}
-                                onClick={(event) => {
-                                  event.stopPropagation();
-                                  setOnchainToken({
-                                    alphaId: result.alphaId,
-                                    symbol: result.symbol,
-                                    name: result.name,
-                                    contractAddress: result.contractAddress,
-                                    chainId: result.chainId,
-                                    price: result.price,
-                                  });
-                                }}
-                              >
-                                Quét on-chain
-                              </button>
+                              {result.source === 'spot' ? (
+                                <a href={`https://www.binance.com/en/trade/${result.baseAsset}_${result.quoteAsset}?type=spot`} target="_blank" rel="noreferrer" className="action-btn" style={{ fontSize: '0.7rem', padding: '0.2rem 0.55rem', textDecoration: 'none' }}>
+                                  Mở Spot ↗
+                                </a>
+                              ) : (
+                                <>
+                                  <button
+                                    className="action-btn"
+                                    style={{ fontSize: '0.7rem', padding: '0.2rem 0.55rem' }}
+                                    onClick={(event) => {
+                                      event.stopPropagation();
+                                      setIsPumpScanModalOpen(false);
+                                      handleSelectFromScan(result);
+                                    }}
+                                  >
+                                    Xem chart
+                                  </button>
+                                  <button
+                                    className="action-btn"
+                                    disabled={!/^0x[a-fA-F0-9]{40}$/.test(result.contractAddress ?? '')}
+                                    title={/^0x[a-fA-F0-9]{40}$/.test(result.contractAddress ?? '') ? 'Quét các giao dịch on-chain > $100K' : 'Binance không trả về contract hợp lệ cho token này'}
+                                    style={{ fontSize: '0.7rem', padding: '0.2rem 0.55rem', borderColor: '#ffb800', color: '#ffd166' }}
+                                    onClick={(event) => {
+                                      event.stopPropagation();
+                                      if (!result.alphaId || !result.contractAddress || !result.chainId) return;
+                                      setOnchainToken({
+                                        alphaId: result.alphaId,
+                                        symbol: result.symbol,
+                                        name: result.name,
+                                        contractAddress: result.contractAddress,
+                                        chainId: result.chainId,
+                                        price: result.price,
+                                      });
+                                    }}
+                                  >
+                                    Quét on-chain
+                                  </button>
+                                </>
+                              )}
                             </div>
                           </td>
                         </tr>

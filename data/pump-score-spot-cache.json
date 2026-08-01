@@ -1,0 +1,1276 @@
+{
+  "version": 8,
+  "generatedAt": "2026-08-01T09:09:50.965Z",
+  "market": "spot",
+  "candleLimit": 200,
+  "results": [
+    {
+      "source": "spot",
+      "symbol": "ZAMAUSDT",
+      "baseAsset": "ZAMA",
+      "quoteAsset": "USDT",
+      "price": 0.05581,
+      "percentChange24h": 3.028,
+      "volume24h": 9661816.16804,
+      "marketCap": 0,
+      "name": "ZAMA",
+      "futuresAsset": "ZAMA",
+      "futuresMarkets": [
+        "USDT_M"
+      ],
+      "latestOpenTime": 1785542400000,
+      "score": {
+        "score": 100,
+        "triggerScore": 65,
+        "cycleScore": 35,
+        "level": "HIGH",
+        "phase": "ACCELERATION_READY",
+        "confidence": "PARTIAL",
+        "breakdown": {
+          "trigger": {
+            "volumeRatio": 8,
+            "tradeRatio": 6,
+            "volumePercentile": 10,
+            "tradePercentile": 8,
+            "rangePercentile": 12,
+            "unusualWicks": 7,
+            "twoSidedWicks": 4,
+            "velocity": 5,
+            "liquidityConfluence": 5
+          },
+          "cycle": {
+            "pricePosition": 12,
+            "maturity": 10,
+            "return30d": 8,
+            "return90d": 5,
+            "blowOffPenalty": 0
+          }
+        },
+        "metrics": {
+          "historyDays": 181,
+          "contextWindowDays": 159,
+          "volumeRatio": 6.564106003553989,
+          "tradeRatio": 9.083528920039868,
+          "volumePercentile180d": 0.9433962264150944,
+          "tradePercentile180d": 0.9748427672955975,
+          "rangePercentile180d": 0.9182389937106918,
+          "lowerWickPercentile180d": 0.9685534591194969,
+          "upperWickPercentile180d": 0.9559748427672956,
+          "averageLowerWick": 0.056763819401751514,
+          "averageUpperWick": 0.08411280035973208,
+          "averageDailyRange": 0.17923135075379507,
+          "return3d": 0.008855955178022956,
+          "cycleAgeDays": 77,
+          "pricePosition90d": 0.7349221789883268,
+          "return30d": 0.7642225031605563,
+          "return90d": 0.9745313052706048
+        }
+      }
+    },
+    {
+      "source": "spot",
+      "symbol": "EPICUSDT",
+      "baseAsset": "EPIC",
+      "quoteAsset": "USDT",
+      "price": 0.7812,
+      "percentChange24h": 1.179,
+      "volume24h": 4072677.63329,
+      "marketCap": 0,
+      "name": "EPIC",
+      "futuresAsset": "EPIC",
+      "futuresMarkets": [
+        "USDT_M"
+      ],
+      "latestOpenTime": 1785542400000,
+      "score": {
+        "score": 92,
+        "triggerScore": 57,
+        "cycleScore": 35,
+        "level": "HIGH",
+        "phase": "ACCELERATION_READY",
+        "confidence": "FULL",
+        "breakdown": {
+          "trigger": {
+            "volumeRatio": 6,
+            "tradeRatio": 6,
+            "volumePercentile": 10,
+            "tradePercentile": 8,
+            "rangePercentile": 6,
+            "unusualWicks": 7,
+            "twoSidedWicks": 4,
+            "velocity": 5,
+            "liquidityConfluence": 5
+          },
+          "cycle": {
+            "pricePosition": 12,
+            "maturity": 10,
+            "return30d": 8,
+            "return90d": 5,
+            "blowOffPenalty": 0
+          }
+        },
+        "metrics": {
+          "historyDays": 200,
+          "contextWindowDays": 178,
+          "volumeRatio": 2.3673945979861055,
+          "tradeRatio": 8.502960005506987,
+          "volumePercentile180d": 0.9269662921348315,
+          "tradePercentile180d": 0.9943820224719101,
+          "rangePercentile180d": 0.8651685393258427,
+          "lowerWickPercentile180d": 1,
+          "upperWickPercentile180d": 0.9382022471910112,
+          "averageLowerWick": 0.1001174249326586,
+          "averageUpperWick": 0.10287533147252095,
+          "averageDailyRange": 0.22650942928230675,
+          "return3d": 0.07826086956521738,
+          "cycleAgeDays": 63,
+          "pricePosition90d": 0.729632834713809,
+          "return30d": 0.6692307692307691,
+          "return90d": 1.2193181818181817
+        }
+      }
+    },
+    {
+      "source": "spot",
+      "symbol": "KAITOUSDT",
+      "baseAsset": "KAITO",
+      "quoteAsset": "USDT",
+      "price": 1.0896,
+      "percentChange24h": -3.975,
+      "volume24h": 7707313.29569,
+      "marketCap": 0,
+      "name": "KAITO",
+      "futuresAsset": "KAITO",
+      "futuresMarkets": [
+        "USDT_M"
+      ],
+      "latestOpenTime": 1785542400000,
+      "score": {
+        "score": 89,
+        "triggerScore": 59,
+        "cycleScore": 30,
+        "level": "HIGH",
+        "phase": "ACCELERATION_READY",
+        "confidence": "FULL",
+        "breakdown": {
+          "trigger": {
+            "volumeRatio": 6,
+            "tradeRatio": 6,
+            "volumePercentile": 10,
+            "tradePercentile": 8,
+            "rangePercentile": 12,
+            "unusualWicks": 7,
+            "twoSidedWicks": 4,
+            "velocity": 1,
+            "liquidityConfluence": 5
+          },
+          "cycle": {
+            "pricePosition": 12,
+            "maturity": 5,
+            "return30d": 8,
+            "return90d": 5,
+            "blowOffPenalty": 0
+          }
+        },
+        "metrics": {
+          "historyDays": 200,
+          "contextWindowDays": 178,
+          "volumeRatio": 2.465663281364715,
+          "tradeRatio": 3.004730097587533,
+          "volumePercentile180d": 0.9943820224719101,
+          "tradePercentile180d": 0.9943820224719101,
+          "rangePercentile180d": 0.9943820224719101,
+          "lowerWickPercentile180d": 0.9662921348314607,
+          "upperWickPercentile180d": 0.949438202247191,
+          "averageLowerWick": 0.045297535728007585,
+          "averageUpperWick": 0.04987235517021838,
+          "averageDailyRange": 0.1783883886128865,
+          "return3d": -0.13245718837116693,
+          "cycleAgeDays": 49,
+          "pricePosition90d": 0.7055868785238338,
+          "return30d": 0.9237018721299892,
+          "return90d": 1.3213981244671782
+        }
+      }
+    },
+    {
+      "source": "spot",
+      "symbol": "BOMEUSDT",
+      "baseAsset": "BOME",
+      "quoteAsset": "USDT",
+      "price": 0.0006016,
+      "percentChange24h": 3.314,
+      "volume24h": 1233007.7144972,
+      "marketCap": 0,
+      "name": "BOME",
+      "futuresAsset": "BOME",
+      "futuresMarkets": [
+        "USDT_M"
+      ],
+      "latestOpenTime": 1785542400000,
+      "score": {
+        "score": 85,
+        "triggerScore": 55,
+        "cycleScore": 30,
+        "level": "HIGH",
+        "phase": "ACCELERATION_READY",
+        "confidence": "FULL",
+        "breakdown": {
+          "trigger": {
+            "volumeRatio": 8,
+            "tradeRatio": 6,
+            "volumePercentile": 10,
+            "tradePercentile": 8,
+            "rangePercentile": 6,
+            "unusualWicks": 7,
+            "twoSidedWicks": 0,
+            "velocity": 5,
+            "liquidityConfluence": 5
+          },
+          "cycle": {
+            "pricePosition": 12,
+            "maturity": 5,
+            "return30d": 8,
+            "return90d": 5,
+            "blowOffPenalty": 0
+          }
+        },
+        "metrics": {
+          "historyDays": 200,
+          "contextWindowDays": 178,
+          "volumeRatio": 11.126412190102876,
+          "tradeRatio": 12.126580326857848,
+          "volumePercentile180d": 0.9662921348314607,
+          "tradePercentile180d": 0.9775280898876404,
+          "rangePercentile180d": 0.898876404494382,
+          "lowerWickPercentile180d": 0.2247191011235955,
+          "upperWickPercentile180d": 0.9382022471910112,
+          "averageLowerWick": 0.013813164351276445,
+          "averageUpperWick": 0.044479757802873686,
+          "averageDailyRange": 0.11843746302638304,
+          "return3d": 0.08184925346285299,
+          "cycleAgeDays": 55,
+          "pricePosition90d": 0.7700680272108843,
+          "return30d": 0.41041275797373356,
+          "return90d": 0.11992551210428304
+        }
+      }
+    },
+    {
+      "source": "spot",
+      "symbol": "RIFUSDT",
+      "baseAsset": "RIF",
+      "quoteAsset": "USDT",
+      "price": 0.0867,
+      "percentChange24h": -0.23,
+      "volume24h": 2278420.3281,
+      "marketCap": 0,
+      "name": "RIF",
+      "futuresAsset": "RIF",
+      "futuresMarkets": [
+        "USDT_M"
+      ],
+      "latestOpenTime": 1785542400000,
+      "score": {
+        "score": 83,
+        "triggerScore": 61,
+        "cycleScore": 22,
+        "level": "HIGH",
+        "phase": "ACCELERATION_READY",
+        "confidence": "FULL",
+        "breakdown": {
+          "trigger": {
+            "volumeRatio": 8,
+            "tradeRatio": 6,
+            "volumePercentile": 10,
+            "tradePercentile": 8,
+            "rangePercentile": 12,
+            "unusualWicks": 7,
+            "twoSidedWicks": 4,
+            "velocity": 1,
+            "liquidityConfluence": 5
+          },
+          "cycle": {
+            "pricePosition": 7,
+            "maturity": 10,
+            "return30d": 0,
+            "return90d": 5,
+            "blowOffPenalty": 0
+          }
+        },
+        "metrics": {
+          "historyDays": 200,
+          "contextWindowDays": 178,
+          "volumeRatio": 4.337560497006992,
+          "tradeRatio": 3.902434465679174,
+          "volumePercentile180d": 0.9719101123595506,
+          "tradePercentile180d": 0.9382022471910112,
+          "rangePercentile180d": 0.9157303370786517,
+          "lowerWickPercentile180d": 0.9831460674157303,
+          "upperWickPercentile180d": 0.9382022471910112,
+          "averageLowerWick": 0.10483744784319005,
+          "averageUpperWick": 0.10390412229250486,
+          "averageDailyRange": 0.3032024647233692,
+          "return3d": -0.07961783439490455,
+          "cycleAgeDays": 69,
+          "pricePosition90d": 0.4094488188976378,
+          "return30d": -0.12776659959758552,
+          "return90d": 0.8525641025641024
+        }
+      }
+    },
+    {
+      "source": "spot",
+      "symbol": "COTIUSDT",
+      "baseAsset": "COTI",
+      "quoteAsset": "USDT",
+      "price": 0.01464,
+      "percentChange24h": -1.148,
+      "volume24h": 21968974.00381,
+      "marketCap": 0,
+      "name": "COTI",
+      "futuresAsset": "COTI",
+      "futuresMarkets": [
+        "USDT_M"
+      ],
+      "latestOpenTime": 1785542400000,
+      "score": {
+        "score": 81,
+        "triggerScore": 61,
+        "cycleScore": 20,
+        "level": "HIGH",
+        "phase": "ACCELERATION_READY",
+        "confidence": "FULL",
+        "breakdown": {
+          "trigger": {
+            "volumeRatio": 8,
+            "tradeRatio": 6,
+            "volumePercentile": 10,
+            "tradePercentile": 8,
+            "rangePercentile": 12,
+            "unusualWicks": 7,
+            "twoSidedWicks": 4,
+            "velocity": 1,
+            "liquidityConfluence": 5
+          },
+          "cycle": {
+            "pricePosition": 7,
+            "maturity": 0,
+            "return30d": 8,
+            "return90d": 5,
+            "blowOffPenalty": 0
+          }
+        },
+        "metrics": {
+          "historyDays": 200,
+          "contextWindowDays": 178,
+          "volumeRatio": 171.38706460590063,
+          "tradeRatio": 81.82508474576271,
+          "volumePercentile180d": 1,
+          "tradePercentile180d": 1,
+          "rangePercentile180d": 1,
+          "lowerWickPercentile180d": 0.8820224719101124,
+          "upperWickPercentile180d": 1,
+          "averageLowerWick": 0.028728406071885686,
+          "averageUpperWick": 0.19287859530392315,
+          "averageDailyRange": 0.43789485467471395,
+          "return3d": -0.1532677848467322,
+          "cycleAgeDays": 11,
+          "pricePosition90d": 0.5401301518438177,
+          "return30d": 0.7264150943396228,
+          "return90d": 0.039034776437189445
+        }
+      }
+    },
+    {
+      "source": "spot",
+      "symbol": "PEOPLEUSDT",
+      "baseAsset": "PEOPLE",
+      "quoteAsset": "USDT",
+      "price": 0.00669,
+      "percentChange24h": -1.762,
+      "volume24h": 934659.843793,
+      "marketCap": 0,
+      "name": "PEOPLE",
+      "futuresAsset": "PEOPLE",
+      "futuresMarkets": [
+        "USDT_M"
+      ],
+      "latestOpenTime": 1785542400000,
+      "score": {
+        "score": 81,
+        "triggerScore": 61,
+        "cycleScore": 20,
+        "level": "HIGH",
+        "phase": "ACCELERATION_READY",
+        "confidence": "FULL",
+        "breakdown": {
+          "trigger": {
+            "volumeRatio": 8,
+            "tradeRatio": 6,
+            "volumePercentile": 10,
+            "tradePercentile": 8,
+            "rangePercentile": 12,
+            "unusualWicks": 7,
+            "twoSidedWicks": 4,
+            "velocity": 1,
+            "liquidityConfluence": 5
+          },
+          "cycle": {
+            "pricePosition": 7,
+            "maturity": 5,
+            "return30d": 8,
+            "return90d": 0,
+            "blowOffPenalty": 0
+          }
+        },
+        "metrics": {
+          "historyDays": 200,
+          "contextWindowDays": 178,
+          "volumeRatio": 5.513090301205098,
+          "tradeRatio": 11.34635715927373,
+          "volumePercentile180d": 0.949438202247191,
+          "tradePercentile180d": 1,
+          "rangePercentile180d": 0.9606741573033708,
+          "lowerWickPercentile180d": 0.7696629213483146,
+          "upperWickPercentile180d": 0.9831460674157303,
+          "averageLowerWick": 0.02215673878885113,
+          "averageUpperWick": 0.041714209934383906,
+          "averageDailyRange": 0.10863689300327141,
+          "return3d": -0.007418397626112849,
+          "cycleAgeDays": 31,
+          "pricePosition90d": 0.4663341645885288,
+          "return30d": 0.2890173410404624,
+          "return90d": -0.14340588988476322
+        }
+      }
+    },
+    {
+      "source": "spot",
+      "symbol": "EULUSDT",
+      "baseAsset": "EUL",
+      "quoteAsset": "USDT",
+      "price": 1.344,
+      "percentChange24h": -6.145,
+      "volume24h": 44141135.66543,
+      "marketCap": 0,
+      "name": "EUL",
+      "futuresAsset": "EUL",
+      "futuresMarkets": [
+        "USDT_M"
+      ],
+      "latestOpenTime": 1785542400000,
+      "score": {
+        "score": 77,
+        "triggerScore": 61,
+        "cycleScore": 16,
+        "level": "HIGH",
+        "phase": "TRIGGER_ONLY",
+        "confidence": "FULL",
+        "breakdown": {
+          "trigger": {
+            "volumeRatio": 8,
+            "tradeRatio": 6,
+            "volumePercentile": 10,
+            "tradePercentile": 8,
+            "rangePercentile": 12,
+            "unusualWicks": 7,
+            "twoSidedWicks": 4,
+            "velocity": 1,
+            "liquidityConfluence": 5
+          },
+          "cycle": {
+            "pricePosition": 3,
+            "maturity": 5,
+            "return30d": 8,
+            "return90d": 0,
+            "blowOffPenalty": 0
+          }
+        },
+        "metrics": {
+          "historyDays": 200,
+          "contextWindowDays": 178,
+          "volumeRatio": 76.18735691463637,
+          "tradeRatio": 63.22026599113363,
+          "volumePercentile180d": 1,
+          "tradePercentile180d": 1,
+          "rangePercentile180d": 1,
+          "lowerWickPercentile180d": 0.7584269662921348,
+          "upperWickPercentile180d": 1,
+          "averageLowerWick": 0.024237086385972436,
+          "averageUpperWick": 0.09257947706441892,
+          "averageDailyRange": 0.34027825921668364,
+          "return3d": -0.19047619047619047,
+          "cycleAgeDays": 51,
+          "pricePosition90d": 0.2677453027139875,
+          "return30d": 0.31666666666666665,
+          "return90d": -0.044128113879003616
+        }
+      }
+    },
+    {
+      "source": "spot",
+      "symbol": "BANKUSDT",
+      "baseAsset": "BANK",
+      "quoteAsset": "USDT",
+      "price": 0.0571,
+      "percentChange24h": -15.533,
+      "volume24h": 29535815.08458,
+      "marketCap": 0,
+      "name": "BANK",
+      "futuresAsset": "BANK",
+      "futuresMarkets": [
+        "USDT_M"
+      ],
+      "latestOpenTime": 1785542400000,
+      "score": {
+        "score": 77,
+        "triggerScore": 59,
+        "cycleScore": 18,
+        "level": "HIGH",
+        "phase": "TRIGGER_ONLY",
+        "confidence": "FULL",
+        "breakdown": {
+          "trigger": {
+            "volumeRatio": 8,
+            "tradeRatio": 4,
+            "volumePercentile": 10,
+            "tradePercentile": 8,
+            "rangePercentile": 12,
+            "unusualWicks": 7,
+            "twoSidedWicks": 4,
+            "velocity": 1,
+            "liquidityConfluence": 5
+          },
+          "cycle": {
+            "pricePosition": 0,
+            "maturity": 5,
+            "return30d": 8,
+            "return90d": 5,
+            "blowOffPenalty": 0
+          }
+        },
+        "metrics": {
+          "historyDays": 200,
+          "contextWindowDays": 178,
+          "volumeRatio": 2.6111307083153177,
+          "tradeRatio": 2.0209143863392884,
+          "volumePercentile180d": 0.9775280898876404,
+          "tradePercentile180d": 0.9550561797752809,
+          "rangePercentile180d": 0.9662921348314607,
+          "lowerWickPercentile180d": 0.9438202247191011,
+          "upperWickPercentile180d": 1,
+          "averageLowerWick": 0.08264728654172383,
+          "averageUpperWick": 0.19481117183961794,
+          "averageDailyRange": 0.510966532192464,
+          "return3d": -0.6680208937899014,
+          "cycleAgeDays": 56,
+          "pricePosition90d": 0.06110335195530727,
+          "return30d": 0.5212765957446808,
+          "return90d": 0.7177177177177176
+        }
+      }
+    },
+    {
+      "source": "spot",
+      "symbol": "ESPUSDT",
+      "baseAsset": "ESP",
+      "quoteAsset": "USDT",
+      "price": 0.06572,
+      "percentChange24h": -2.086,
+      "volume24h": 2519947.97514,
+      "marketCap": 0,
+      "name": "ESP",
+      "futuresAsset": "ESP",
+      "futuresMarkets": [
+        "USDT_M"
+      ],
+      "latestOpenTime": 1785542400000,
+      "score": {
+        "score": 73,
+        "triggerScore": 65,
+        "cycleScore": 8,
+        "level": "HIGH",
+        "phase": "TRIGGER_ONLY",
+        "confidence": "PARTIAL",
+        "breakdown": {
+          "trigger": {
+            "volumeRatio": 8,
+            "tradeRatio": 6,
+            "volumePercentile": 10,
+            "tradePercentile": 8,
+            "rangePercentile": 12,
+            "unusualWicks": 7,
+            "twoSidedWicks": 4,
+            "velocity": 5,
+            "liquidityConfluence": 5
+          },
+          "cycle": {
+            "pricePosition": 3,
+            "maturity": 5,
+            "return30d": 0,
+            "return90d": 0,
+            "blowOffPenalty": 0
+          }
+        },
+        "metrics": {
+          "historyDays": 171,
+          "contextWindowDays": 149,
+          "volumeRatio": 13.507001907844515,
+          "tradeRatio": 25.687394580006746,
+          "volumePercentile180d": 0.9731543624161074,
+          "tradePercentile180d": 1,
+          "rangePercentile180d": 1,
+          "lowerWickPercentile180d": 0.9395973154362416,
+          "upperWickPercentile180d": 0.9463087248322147,
+          "averageLowerWick": 0.032680424267365796,
+          "averageUpperWick": 0.08264534831050364,
+          "averageDailyRange": 0.2730879660397658,
+          "return3d": 0.004125286478227741,
+          "cycleAgeDays": 37,
+          "pricePosition90d": 0.1546674801708359,
+          "return30d": -0.036363636363636265,
+          "return90d": -0.03267589049161024
+        }
+      }
+    },
+    {
+      "source": "spot",
+      "symbol": "MMTUSDT",
+      "baseAsset": "MMT",
+      "quoteAsset": "USDT",
+      "price": 0.2079,
+      "percentChange24h": -31.045,
+      "volume24h": 35736393.99184,
+      "marketCap": 0,
+      "name": "MMT",
+      "futuresAsset": "MMT",
+      "futuresMarkets": [
+        "USDT_M"
+      ],
+      "latestOpenTime": 1785542400000,
+      "score": {
+        "score": 71,
+        "triggerScore": 50,
+        "cycleScore": 21,
+        "level": "WATCH",
+        "phase": "ACCELERATION_READY",
+        "confidence": "FULL",
+        "breakdown": {
+          "trigger": {
+            "volumeRatio": 6,
+            "tradeRatio": 2,
+            "volumePercentile": 10,
+            "tradePercentile": 4,
+            "rangePercentile": 12,
+            "unusualWicks": 7,
+            "twoSidedWicks": 4,
+            "velocity": 5,
+            "liquidityConfluence": 0
+          },
+          "cycle": {
+            "pricePosition": 3,
+            "maturity": 5,
+            "return30d": 8,
+            "return90d": 5,
+            "blowOffPenalty": 0
+          }
+        },
+        "metrics": {
+          "historyDays": 200,
+          "contextWindowDays": 178,
+          "volumeRatio": 1.8609963480124836,
+          "tradeRatio": 1.1761893212293406,
+          "volumePercentile180d": 0.9382022471910112,
+          "tradePercentile180d": 0.8820224719101124,
+          "rangePercentile180d": 1,
+          "lowerWickPercentile180d": 0.9943820224719101,
+          "upperWickPercentile180d": 1,
+          "averageLowerWick": 0.04611111454244161,
+          "averageUpperWick": 0.1475633840531256,
+          "averageDailyRange": 0.2897406526612695,
+          "return3d": 0.07952182952182962,
+          "cycleAgeDays": 55,
+          "pricePosition90d": 0.29523809523809524,
+          "return30d": 0.372769332452082,
+          "return90d": 0.5569715142428786
+        }
+      }
+    },
+    {
+      "source": "spot",
+      "symbol": "ACHUSDT",
+      "baseAsset": "ACH",
+      "quoteAsset": "USDT",
+      "price": 0.00457,
+      "percentChange24h": 2.237,
+      "volume24h": 1471023.16491,
+      "marketCap": 0,
+      "name": "ACH",
+      "futuresAsset": "ACH",
+      "futuresMarkets": [
+        "USDT_M"
+      ],
+      "latestOpenTime": 1785542400000,
+      "score": {
+        "score": 69,
+        "triggerScore": 61,
+        "cycleScore": 8,
+        "level": "WATCH",
+        "phase": "TRIGGER_ONLY",
+        "confidence": "FULL",
+        "breakdown": {
+          "trigger": {
+            "volumeRatio": 8,
+            "tradeRatio": 6,
+            "volumePercentile": 10,
+            "tradePercentile": 8,
+            "rangePercentile": 12,
+            "unusualWicks": 7,
+            "twoSidedWicks": 4,
+            "velocity": 1,
+            "liquidityConfluence": 5
+          },
+          "cycle": {
+            "pricePosition": 0,
+            "maturity": 5,
+            "return30d": 3,
+            "return90d": 0,
+            "blowOffPenalty": 0
+          }
+        },
+        "metrics": {
+          "historyDays": 200,
+          "contextWindowDays": 178,
+          "volumeRatio": 5.680301603897986,
+          "tradeRatio": 5.679271492514277,
+          "volumePercentile180d": 0.9438202247191011,
+          "tradePercentile180d": 0.9382022471910112,
+          "rangePercentile180d": 1,
+          "lowerWickPercentile180d": 0.9606741573033708,
+          "upperWickPercentile180d": 1,
+          "averageLowerWick": 0.02927270281669574,
+          "averageUpperWick": 0.07059753624053247,
+          "averageDailyRange": 0.1486450739732985,
+          "return3d": -0.08232931726907622,
+          "cycleAgeDays": 30,
+          "pricePosition90d": 0.10894941634241256,
+          "return30d": 0.04337899543378998,
+          "return90d": -0.42659974905897113
+        }
+      }
+    },
+    {
+      "source": "spot",
+      "symbol": "DIAUSDT",
+      "baseAsset": "DIA",
+      "quoteAsset": "USDT",
+      "price": 0.1121,
+      "percentChange24h": 7.273,
+      "volume24h": 3030435.49484,
+      "marketCap": 0,
+      "name": "DIA",
+      "futuresAsset": "DIA",
+      "futuresMarkets": [
+        "USDT_M"
+      ],
+      "latestOpenTime": 1785542400000,
+      "score": {
+        "score": 64,
+        "triggerScore": 61,
+        "cycleScore": 3,
+        "level": "WATCH",
+        "phase": "TRIGGER_ONLY",
+        "confidence": "FULL",
+        "breakdown": {
+          "trigger": {
+            "volumeRatio": 8,
+            "tradeRatio": 6,
+            "volumePercentile": 10,
+            "tradePercentile": 8,
+            "rangePercentile": 12,
+            "unusualWicks": 7,
+            "twoSidedWicks": 4,
+            "velocity": 1,
+            "liquidityConfluence": 5
+          },
+          "cycle": {
+            "pricePosition": 0,
+            "maturity": 0,
+            "return30d": 3,
+            "return90d": 0,
+            "blowOffPenalty": 0
+          }
+        },
+        "metrics": {
+          "historyDays": 200,
+          "contextWindowDays": 178,
+          "volumeRatio": 35.64906149863085,
+          "tradeRatio": 54.797783933518005,
+          "volumePercentile180d": 1,
+          "tradePercentile180d": 1,
+          "rangePercentile180d": 1,
+          "lowerWickPercentile180d": 0.9775280898876404,
+          "upperWickPercentile180d": 1,
+          "averageLowerWick": 0.028996630546481255,
+          "averageUpperWick": 0.1598640043482841,
+          "averageDailyRange": 0.30676824907474864,
+          "return3d": -0.04269854824935948,
+          "cycleAgeDays": 6,
+          "pricePosition90d": 0.10258249641319948,
+          "return30d": 0.037962962962962976,
+          "return90d": -0.40719196192490736
+        }
+      }
+    },
+    {
+      "source": "spot",
+      "symbol": "HOLOUSDT",
+      "baseAsset": "HOLO",
+      "quoteAsset": "USDT",
+      "price": 0.0674,
+      "percentChange24h": 0.898,
+      "volume24h": 1456669.92861,
+      "marketCap": 0,
+      "name": "HOLO",
+      "futuresAsset": "HOLO",
+      "futuresMarkets": [
+        "USDT_M"
+      ],
+      "latestOpenTime": 1785542400000,
+      "score": {
+        "score": 62,
+        "triggerScore": 45,
+        "cycleScore": 17,
+        "level": "WATCH",
+        "phase": "TRIGGER_ONLY",
+        "confidence": "FULL",
+        "breakdown": {
+          "trigger": {
+            "volumeRatio": 6,
+            "tradeRatio": 4,
+            "volumePercentile": 5,
+            "tradePercentile": 8,
+            "rangePercentile": 12,
+            "unusualWicks": 4,
+            "twoSidedWicks": 0,
+            "velocity": 1,
+            "liquidityConfluence": 5
+          },
+          "cycle": {
+            "pricePosition": 7,
+            "maturity": 5,
+            "return30d": 0,
+            "return90d": 5,
+            "blowOffPenalty": 0
+          }
+        },
+        "metrics": {
+          "historyDays": 200,
+          "contextWindowDays": 178,
+          "volumeRatio": 2.4887648173031947,
+          "tradeRatio": 1.9798750450558693,
+          "volumePercentile180d": 0.8820224719101124,
+          "tradePercentile180d": 0.9325842696629213,
+          "rangePercentile180d": 0.9044943820224719,
+          "lowerWickPercentile180d": 0.5786516853932584,
+          "upperWickPercentile180d": 0.8426966292134831,
+          "averageLowerWick": 0.019546899970203,
+          "averageUpperWick": 0.040498298598090884,
+          "averageDailyRange": 0.12921576736649315,
+          "return3d": -0.12807244501940485,
+          "cycleAgeDays": 55,
+          "pricePosition90d": 0.4180327868852459,
+          "return30d": -0.005899705014749235,
+          "return90d": 0.09061488673139162
+        }
+      }
+    },
+    {
+      "source": "spot",
+      "symbol": "TURTLEUSDT",
+      "baseAsset": "TURTLE",
+      "quoteAsset": "USDT",
+      "price": 0.042,
+      "percentChange24h": -3.002,
+      "volume24h": 775669.55525,
+      "marketCap": 0,
+      "name": "TURTLE",
+      "futuresAsset": "TURTLE",
+      "futuresMarkets": [
+        "USDT_M"
+      ],
+      "latestOpenTime": 1785542400000,
+      "score": {
+        "score": 58,
+        "triggerScore": 38,
+        "cycleScore": 20,
+        "level": "WATCH",
+        "phase": "ACCELERATION_READY",
+        "confidence": "FULL",
+        "breakdown": {
+          "trigger": {
+            "volumeRatio": 8,
+            "tradeRatio": 6,
+            "volumePercentile": 0,
+            "tradePercentile": 0,
+            "rangePercentile": 12,
+            "unusualWicks": 7,
+            "twoSidedWicks": 0,
+            "velocity": 5,
+            "liquidityConfluence": 0
+          },
+          "cycle": {
+            "pricePosition": 7,
+            "maturity": 5,
+            "return30d": 8,
+            "return90d": 0,
+            "blowOffPenalty": 0
+          }
+        },
+        "metrics": {
+          "historyDays": 200,
+          "contextWindowDays": 178,
+          "volumeRatio": 2.906301837647352,
+          "tradeRatio": 4.123775601068567,
+          "volumePercentile180d": 0.46629213483146065,
+          "tradePercentile180d": 0.5112359550561798,
+          "rangePercentile180d": 0.9719101123595506,
+          "lowerWickPercentile180d": 0.5056179775280899,
+          "upperWickPercentile180d": 1,
+          "averageLowerWick": 0.012860217040307357,
+          "averageUpperWick": 0.05220707534485643,
+          "averageDailyRange": 0.1077906187770363,
+          "return3d": 0.03194103194103204,
+          "cycleAgeDays": 37,
+          "pricePosition90d": 0.36981132075471707,
+          "return30d": 0.19658119658119677,
+          "return90d": -0.18287937743190663
+        }
+      }
+    },
+    {
+      "source": "spot",
+      "symbol": "PROMUSDT",
+      "baseAsset": "PROM",
+      "quoteAsset": "USDT",
+      "price": 1.78,
+      "percentChange24h": 8.404,
+      "volume24h": 508363.15919,
+      "marketCap": 0,
+      "name": "PROM",
+      "futuresAsset": "PROM",
+      "futuresMarkets": [
+        "USDT_M"
+      ],
+      "latestOpenTime": 1785542400000,
+      "score": {
+        "score": 58,
+        "triggerScore": 38,
+        "cycleScore": 20,
+        "level": "WATCH",
+        "phase": "ACCELERATION_READY",
+        "confidence": "FULL",
+        "breakdown": {
+          "trigger": {
+            "volumeRatio": 8,
+            "tradeRatio": 6,
+            "volumePercentile": 5,
+            "tradePercentile": 4,
+            "rangePercentile": 6,
+            "unusualWicks": 4,
+            "twoSidedWicks": 4,
+            "velocity": 1,
+            "liquidityConfluence": 0
+          },
+          "cycle": {
+            "pricePosition": 7,
+            "maturity": 5,
+            "return30d": 8,
+            "return90d": 0,
+            "blowOffPenalty": 0
+          }
+        },
+        "metrics": {
+          "historyDays": 200,
+          "contextWindowDays": 178,
+          "volumeRatio": 2.859115369091338,
+          "tradeRatio": 3.4373098228914722,
+          "volumePercentile180d": 0.7696629213483146,
+          "tradePercentile180d": 0.7528089887640449,
+          "rangePercentile180d": 0.8764044943820225,
+          "lowerWickPercentile180d": 0.8820224719101124,
+          "upperWickPercentile180d": 0.8314606741573034,
+          "averageLowerWick": 0.03921517200330272,
+          "averageUpperWick": 0.0575806097212685,
+          "averageDailyRange": 0.15417113096239285,
+          "return3d": -0.11133300049925121,
+          "cycleAgeDays": 58,
+          "pricePosition90d": 0.5412844036697247,
+          "return30d": 0.6036036036036034,
+          "return90d": -0.10955477738869435
+        }
+      }
+    },
+    {
+      "source": "spot",
+      "symbol": "LAUSDT",
+      "baseAsset": "LA",
+      "quoteAsset": "USDT",
+      "price": 0.0513,
+      "percentChange24h": -0.774,
+      "volume24h": 782228.06557,
+      "marketCap": 0,
+      "name": "LA",
+      "futuresAsset": "LA",
+      "futuresMarkets": [
+        "USDT_M"
+      ],
+      "latestOpenTime": 1785542400000,
+      "score": {
+        "score": 57,
+        "triggerScore": 57,
+        "cycleScore": 0,
+        "level": "WATCH",
+        "phase": "TRIGGER_ONLY",
+        "confidence": "FULL",
+        "breakdown": {
+          "trigger": {
+            "volumeRatio": 8,
+            "tradeRatio": 6,
+            "volumePercentile": 10,
+            "tradePercentile": 8,
+            "rangePercentile": 12,
+            "unusualWicks": 7,
+            "twoSidedWicks": 0,
+            "velocity": 1,
+            "liquidityConfluence": 5
+          },
+          "cycle": {
+            "pricePosition": 0,
+            "maturity": 0,
+            "return30d": 0,
+            "return90d": 0,
+            "blowOffPenalty": 0
+          }
+        },
+        "metrics": {
+          "historyDays": 200,
+          "contextWindowDays": 178,
+          "volumeRatio": 6.0346228261458945,
+          "tradeRatio": 6.892246136865342,
+          "volumePercentile180d": 0.9719101123595506,
+          "tradePercentile180d": 0.9719101123595506,
+          "rangePercentile180d": 0.9382022471910112,
+          "lowerWickPercentile180d": 0.5955056179775281,
+          "upperWickPercentile180d": 0.9662921348314607,
+          "averageLowerWick": 0.020237270048540226,
+          "averageUpperWick": 0.13265366517285243,
+          "averageDailyRange": 0.24073499930487235,
+          "return3d": -0.03389830508474578,
+          "cycleAgeDays": 11,
+          "pricePosition90d": 0.026768642447418705,
+          "return30d": -0.17788461538461542,
+          "return90d": -0.6266375545851528
+        }
+      }
+    },
+    {
+      "source": "spot",
+      "symbol": "LQTYUSDT",
+      "baseAsset": "LQTY",
+      "quoteAsset": "USDT",
+      "price": 0.171,
+      "percentChange24h": -4.841,
+      "volume24h": 396501.03436,
+      "marketCap": 0,
+      "name": "LQTY",
+      "futuresAsset": "LQTY",
+      "futuresMarkets": [
+        "USDT_M"
+      ],
+      "latestOpenTime": 1785542400000,
+      "score": {
+        "score": 56,
+        "triggerScore": 56,
+        "cycleScore": 0,
+        "level": "WATCH",
+        "phase": "TRIGGER_ONLY",
+        "confidence": "FULL",
+        "breakdown": {
+          "trigger": {
+            "volumeRatio": 8,
+            "tradeRatio": 6,
+            "volumePercentile": 5,
+            "tradePercentile": 8,
+            "rangePercentile": 12,
+            "unusualWicks": 7,
+            "twoSidedWicks": 4,
+            "velocity": 1,
+            "liquidityConfluence": 5
+          },
+          "cycle": {
+            "pricePosition": 0,
+            "maturity": 0,
+            "return30d": 0,
+            "return90d": 0,
+            "blowOffPenalty": 0
+          }
+        },
+        "metrics": {
+          "historyDays": 200,
+          "contextWindowDays": 178,
+          "volumeRatio": 13.88224667787533,
+          "tradeRatio": 15.231707317073171,
+          "volumePercentile180d": 0.8876404494382022,
+          "tradePercentile180d": 0.9269662921348315,
+          "rangePercentile180d": 0.9550561797752809,
+          "lowerWickPercentile180d": 0.8314606741573034,
+          "upperWickPercentile180d": 0.9550561797752809,
+          "averageLowerWick": 0.02352356197297189,
+          "averageUpperWick": 0.032161848825034624,
+          "averageDailyRange": 0.10528712657842869,
+          "return3d": -0.11810211449200603,
+          "cycleAgeDays": 11,
+          "pricePosition90d": 0.09278350515463926,
+          "return30d": -0.07065217391304335,
+          "return90d": -0.4356435643564356
+        }
+      }
+    },
+    {
+      "source": "spot",
+      "symbol": "UNIUSDT",
+      "baseAsset": "UNI",
+      "quoteAsset": "USDT",
+      "price": 4.107,
+      "percentChange24h": -6.425,
+      "volume24h": 29891532.05181,
+      "marketCap": 0,
+      "name": "UNI",
+      "futuresAsset": "UNI",
+      "futuresMarkets": [
+        "COIN_M",
+        "USDT_M"
+      ],
+      "latestOpenTime": 1785542400000,
+      "score": {
+        "score": 55,
+        "triggerScore": 25,
+        "cycleScore": 30,
+        "level": "WATCH",
+        "phase": "EARLY_CYCLE",
+        "confidence": "FULL",
+        "breakdown": {
+          "trigger": {
+            "volumeRatio": 3,
+            "tradeRatio": 2,
+            "volumePercentile": 5,
+            "tradePercentile": 4,
+            "rangePercentile": 6,
+            "unusualWicks": 0,
+            "twoSidedWicks": 0,
+            "velocity": 5,
+            "liquidityConfluence": 0
+          },
+          "cycle": {
+            "pricePosition": 12,
+            "maturity": 5,
+            "return30d": 8,
+            "return90d": 5,
+            "blowOffPenalty": 0
+          }
+        },
+        "metrics": {
+          "historyDays": 200,
+          "contextWindowDays": 178,
+          "volumeRatio": 1.4854690615875201,
+          "tradeRatio": 1.191891724862493,
+          "volumePercentile180d": 0.8314606741573034,
+          "tradePercentile180d": 0.7134831460674157,
+          "rangePercentile180d": 0.8370786516853933,
+          "lowerWickPercentile180d": 0.5168539325842697,
+          "upperWickPercentile180d": 0.5617977528089888,
+          "averageLowerWick": 0.016405391837891477,
+          "averageUpperWick": 0.01762092660098715,
+          "averageDailyRange": 0.08302291667842746,
+          "return3d": 0.029065397143573035,
+          "cycleAgeDays": 55,
+          "pricePosition90d": 0.7921273772666962,
+          "return30d": 0.29150943396226414,
+          "return90d": 0.2699443413729128
+        }
+      }
+    },
+    {
+      "source": "spot",
+      "symbol": "ERAUSDT",
+      "baseAsset": "ERA",
+      "quoteAsset": "USDT",
+      "price": 0.0676,
+      "percentChange24h": -3.429,
+      "volume24h": 7934297.98183,
+      "marketCap": 0,
+      "name": "ERA",
+      "futuresAsset": "ERA",
+      "futuresMarkets": [
+        "USDT_M"
+      ],
+      "latestOpenTime": 1785542400000,
+      "score": {
+        "score": 52,
+        "triggerScore": 52,
+        "cycleScore": 0,
+        "level": "WATCH",
+        "phase": "TRIGGER_ONLY",
+        "confidence": "FULL",
+        "breakdown": {
+          "trigger": {
+            "volumeRatio": 8,
+            "tradeRatio": 2,
+            "volumePercentile": 10,
+            "tradePercentile": 8,
+            "rangePercentile": 12,
+            "unusualWicks": 7,
+            "twoSidedWicks": 4,
+            "velocity": 1,
+            "liquidityConfluence": 0
+          },
+          "cycle": {
+            "pricePosition": 0,
+            "maturity": 0,
+            "return30d": 0,
+            "return90d": 0,
+            "blowOffPenalty": 0
+          }
+        },
+        "metrics": {
+          "historyDays": 200,
+          "contextWindowDays": 178,
+          "volumeRatio": 2.5496517561441068,
+          "tradeRatio": 1.4715854247104247,
+          "volumePercentile180d": 0.9662921348314607,
+          "tradePercentile180d": 0.9213483146067416,
+          "rangePercentile180d": 0.9550561797752809,
+          "lowerWickPercentile180d": 0.8932584269662921,
+          "upperWickPercentile180d": 0.9606741573033708,
+          "averageLowerWick": 0.025540593333826484,
+          "averageUpperWick": 0.08703685984170033,
+          "averageDailyRange": 0.17614235509993684,
+          "return3d": -0.002949852507374673,
+          "cycleAgeDays": 11,
+          "pricePosition90d": 0.06260575296108288,
+          "return30d": -0.20564042303172736,
+          "return90d": -0.4966492926284438
+        }
+      }
+    }
+  ],
+  "totalCandidates": 479,
+  "chainFilteredOutTokens": 0,
+  "futuresFilteredOutTokens": 99,
+  "scannedTokens": 344,
+  "filteredOutTokens": 36,
+  "failedTokens": 1,
+  "scoreFilteredOutTokens": 323
+}

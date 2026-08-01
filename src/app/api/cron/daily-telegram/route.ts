@@ -52,26 +52,51 @@ async function getAlphaLeaders() {
     .slice(0, 5);
 }
 
-async function getPumpSignals() {
+async function getPumpSignals(market: 'alpha' | 'spot') {
   // Do not fetch our own public route: Deployment Protection can return an HTML
   // login page to server-to-server requests. Invoking the handler directly keeps
   // the daily scan inside this protected cron Function.
-  const response = await runPumpScan(new NextRequest('https://internal.alpha-bot/api/scan-pump?force=1'));
+  const response = await runPumpScan(new NextRequest(`https://internal.alpha-bot/api/scan-pump?market=${market}&force=1`));
   const payload = (await response.json()) as { success?: boolean; results?: PumpResult[]; error?: string };
   if (!response.ok || !payload.success) throw new Error(payload.error ?? `Pump scan request failed (${response.status}).`);
   return (payload.results ?? []).slice(0, 5);
 }
 
-function formatDailyDigest(alphaLeaders: AlphaToken[], pumpSignals: PumpResult[], appUrl: string, pumpUnavailable: boolean) {
+function pumpPhaseLabel(phase: string) {
+  if (phase === 'ACCELERATION_READY') return 'Sẵn sàng tăng tốc';
+  if (phase === 'EARLY_CYCLE') return 'Chu kỳ đang hình thành';
+  if (phase === 'TRIGGER_ONLY') return 'Tín hiệu ngắn hạn';
+  return 'Chưa có cấu trúc rõ ràng';
+}
+
+function appendPumpSection(lines: string[], title: string, signals: PumpResult[], unavailable: boolean) {
+  lines.push('', `<b>${title}</b>`);
+  if (unavailable) {
+    lines.push('⚠️ Bộ quét tạm thời không phản hồi.');
+    return;
+  }
+  if (signals.length === 0) {
+    lines.push('Chưa có tín hiệu Pump vượt ngưỡng hôm nay.');
+    return;
+  }
+  lines.push(...signals.map((signal, index) =>
+    `${index + 1}. <b>${escapeTelegramHtml(signal.symbol)}</b> · điểm <b>${signal.score.score}</b> · ${escapeTelegramHtml(pumpPhaseLabel(signal.score.phase))} · ${sign(signal.percentChange24h)}`
+  ));
+}
+
+function formatDailyDigest(
+  alphaLeaders: AlphaToken[],
+  alphaPumpSignals: PumpResult[],
+  spotPumpSignals: PumpResult[],
+  appUrl: string,
+  alphaPumpUnavailable: boolean,
+  spotPumpUnavailable: boolean
+) {
   const date = new Intl.DateTimeFormat('vi-VN', { dateStyle: 'full', timeZone: 'Asia/Ho_Chi_Minh' }).format(new Date());
-  const lines = [`<b>⚡ Alpha Bot · Daily Digest</b>`, `<i>${date}</i>`, '', '<b>🔥 Alpha theo volume 24h</b>'];
-  lines.push(...alphaLeaders.map((token, index) => `${index + 1}. <b>${escapeTelegramHtml(token.symbol ?? '—')}</b> ${sign(number(token.percentChange24h))} · $${compact(number(token.volume24h))}`));
-  lines.push('', '<b>🚀 Pump signals</b>');
-  lines.push(...(pumpUnavailable
-    ? ['⚠️ Pump scanner tạm thời không phản hồi; Alpha leaders vẫn được cập nhật.']
-    : pumpSignals.length
-    ? pumpSignals.map((signal, index) => `${index + 1}. <b>${escapeTelegramHtml(signal.symbol)}</b> · score <b>${signal.score.score}</b> · ${escapeTelegramHtml(signal.score.phase)} · ${sign(signal.percentChange24h)}`)
-    : ['Chưa có tín hiệu pump vượt ngưỡng hôm nay.']));
+  const lines = [`<b>⚡ Alpha Bot · Tổng hợp hằng ngày</b>`, `<i>${date}</i>`, '', '<b>🔥 Top Binance Alpha theo volume 24h</b>'];
+  lines.push(...alphaLeaders.map((token, index) => `${index + 1}. <b>${escapeTelegramHtml(token.symbol ?? '—')}</b> · ${sign(number(token.percentChange24h))} · volume $${compact(number(token.volume24h))}`));
+  appendPumpSection(lines, '🚀 Tín hiệu Pump Binance Alpha', alphaPumpSignals, alphaPumpUnavailable);
+  appendPumpSection(lines, '⚡ Tín hiệu Pump Binance Spot / USDT', spotPumpSignals, spotPumpUnavailable);
   lines.push('', `<a href="${escapeTelegramHtml(appUrl)}">Mở Alpha Bot ↗</a>`);
   return lines.join('\n');
 }
@@ -85,16 +110,23 @@ export async function GET(request: Request) {
   if (locked !== 'OK') return Response.json({ success: true, skipped: true, reason: 'Daily digest was already sent or is running.' });
 
   try {
-    const [alphaResult, pumpResult] = await Promise.allSettled([getAlphaLeaders(), getPumpSignals()]);
+    const [alphaResult, alphaPumpResult, spotPumpResult] = await Promise.allSettled([
+      getAlphaLeaders(),
+      getPumpSignals('alpha'),
+      getPumpSignals('spot'),
+    ]);
     if (alphaResult.status === 'rejected') throw new Error(`Alpha source: ${alphaResult.reason instanceof Error ? alphaResult.reason.message : 'unknown error'}`);
     const alphaLeaders = alphaResult.value;
-    const pumpUnavailable = pumpResult.status === 'rejected';
-    if (pumpUnavailable) console.error('Daily Telegram pump scan failed:', pumpResult.reason instanceof Error ? pumpResult.reason.message : 'unknown error');
-    const pumpSignals = pumpUnavailable ? [] : pumpResult.value;
+    const alphaPumpUnavailable = alphaPumpResult.status === 'rejected';
+    const spotPumpUnavailable = spotPumpResult.status === 'rejected';
+    if (alphaPumpUnavailable) console.error('Daily Telegram Alpha pump scan failed:', alphaPumpResult.reason instanceof Error ? alphaPumpResult.reason.message : 'unknown error');
+    if (spotPumpUnavailable) console.error('Daily Telegram Spot pump scan failed:', spotPumpResult.reason instanceof Error ? spotPumpResult.reason.message : 'unknown error');
+    const alphaPumpSignals = alphaPumpUnavailable ? [] : alphaPumpResult.value;
+    const spotPumpSignals = spotPumpUnavailable ? [] : spotPumpResult.value;
     const appUrl = process.env.APP_URL ?? new URL(request.url).origin;
-    await sendTelegramMessage(formatDailyDigest(alphaLeaders, pumpSignals, appUrl, pumpUnavailable));
+    await sendTelegramMessage(formatDailyDigest(alphaLeaders, alphaPumpSignals, spotPumpSignals, appUrl, alphaPumpUnavailable, spotPumpUnavailable));
     await redisCommand('SET', lockKey, 'sent', 'EX', String(14 * 24 * 60 * 60));
-    return Response.json({ success: true, alphaTokens: alphaLeaders.length, pumpSignals: pumpSignals.length, pumpUnavailable });
+    return Response.json({ success: true, alphaTokens: alphaLeaders.length, alphaPumpSignals: alphaPumpSignals.length, spotPumpSignals: spotPumpSignals.length, alphaPumpUnavailable, spotPumpUnavailable });
   } catch (error) {
     await redisCommand('DEL', lockKey).catch(() => undefined);
     const message = error instanceof Error ? error.message : 'Unable to send daily digest.';
