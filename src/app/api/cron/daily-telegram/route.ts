@@ -1,5 +1,6 @@
 import { NextRequest } from 'next/server';
 import { GET as runPumpScan } from '@/app/api/scan-pump/route';
+import { GET as runFuturesOiScan } from '@/app/api/scan-futures-oi/route';
 import { escapeTelegramHtml, sendTelegramMessage } from '@/lib/telegram';
 import { redisCommand } from '@/lib/upstash';
 
@@ -22,6 +23,13 @@ type AlphaToken = {
 };
 
 type PumpResult = { symbol: string; name: string; price: number; percentChange24h: number; volume24h: number; score: { score: number; phase: string } };
+type FuturesOiResult = {
+  symbol: string;
+  score: number;
+  strongestRatio: number;
+  marketCap: number;
+  oiToMarketCapPercent: number;
+};
 
 function number(value: unknown) {
   const parsed = Number(value);
@@ -62,6 +70,13 @@ async function getPumpSignals(market: 'alpha' | 'spot') {
   return (payload.results ?? []).slice(0, 5);
 }
 
+async function getFuturesOiSignals() {
+  const response = await runFuturesOiScan();
+  const payload = (await response.json()) as { success?: boolean; results?: FuturesOiResult[]; error?: string };
+  if (!response.ok || !payload.success) throw new Error(payload.error ?? `Futures OI scan request failed (${response.status}).`);
+  return (payload.results ?? []).slice(0, 10);
+}
+
 function pumpPhaseLabel(phase: string) {
   if (phase === 'ACCELERATION_READY') return 'Sẵn sàng tăng tốc';
   if (phase === 'EARLY_CYCLE') return 'Chu kỳ đang hình thành';
@@ -84,19 +99,37 @@ function appendPumpSection(lines: string[], title: string, signals: PumpResult[]
   ));
 }
 
+function appendFuturesOiSection(lines: string[], signals: FuturesOiResult[], unavailable: boolean) {
+  lines.push('', '<b>🧲 Top 10 Futures OI bất thường</b>');
+  if (unavailable) {
+    lines.push('⚠️ Bộ quét Futures OI tạm thời không phản hồi.');
+    return;
+  }
+  if (signals.length === 0) {
+    lines.push('Chưa có Futures OI tăng bất thường hôm nay.');
+    return;
+  }
+  lines.push(...signals.map((signal, index) =>
+    `${index + 1}. <b>${escapeTelegramHtml(signal.symbol)}</b> · <b>${signal.score}/115</b> · OI ${signal.strongestRatio.toFixed(2)}x · OI/MC ${signal.oiToMarketCapPercent.toFixed(1)}% · MC $${compact(signal.marketCap)}`
+  ));
+}
+
 function formatDailyDigest(
   alphaLeaders: AlphaToken[],
   alphaPumpSignals: PumpResult[],
   spotPumpSignals: PumpResult[],
+  futuresOiSignals: FuturesOiResult[],
   appUrl: string,
   alphaPumpUnavailable: boolean,
-  spotPumpUnavailable: boolean
+  spotPumpUnavailable: boolean,
+  futuresOiUnavailable: boolean
 ) {
   const date = new Intl.DateTimeFormat('vi-VN', { dateStyle: 'full', timeZone: 'Asia/Ho_Chi_Minh' }).format(new Date());
   const lines = [`<b>⚡ Alpha Bot · Tổng hợp hằng ngày</b>`, `<i>${date}</i>`, '', '<b>🔥 Top Binance Alpha theo volume 24h</b>'];
   lines.push(...alphaLeaders.map((token, index) => `${index + 1}. <b>${escapeTelegramHtml(token.symbol ?? '—')}</b> · ${sign(number(token.percentChange24h))} · volume $${compact(number(token.volume24h))}`));
   appendPumpSection(lines, '🚀 Tín hiệu Pump Binance Alpha', alphaPumpSignals, alphaPumpUnavailable);
   appendPumpSection(lines, '⚡ Tín hiệu Pump Binance Spot / USDT', spotPumpSignals, spotPumpUnavailable);
+  appendFuturesOiSection(lines, futuresOiSignals, futuresOiUnavailable);
   lines.push('', `<a href="${escapeTelegramHtml(appUrl)}">Mở Alpha Bot ↗</a>`);
   return lines.join('\n');
 }
@@ -110,23 +143,27 @@ export async function GET(request: Request) {
   if (locked !== 'OK') return Response.json({ success: true, skipped: true, reason: 'Daily digest was already sent or is running.' });
 
   try {
-    const [alphaResult, alphaPumpResult, spotPumpResult] = await Promise.allSettled([
+    const [alphaResult, alphaPumpResult, spotPumpResult, futuresOiResult] = await Promise.allSettled([
       getAlphaLeaders(),
       getPumpSignals('alpha'),
       getPumpSignals('spot'),
+      getFuturesOiSignals(),
     ]);
     if (alphaResult.status === 'rejected') throw new Error(`Alpha source: ${alphaResult.reason instanceof Error ? alphaResult.reason.message : 'unknown error'}`);
     const alphaLeaders = alphaResult.value;
     const alphaPumpUnavailable = alphaPumpResult.status === 'rejected';
     const spotPumpUnavailable = spotPumpResult.status === 'rejected';
+    const futuresOiUnavailable = futuresOiResult.status === 'rejected';
     if (alphaPumpUnavailable) console.error('Daily Telegram Alpha pump scan failed:', alphaPumpResult.reason instanceof Error ? alphaPumpResult.reason.message : 'unknown error');
     if (spotPumpUnavailable) console.error('Daily Telegram Spot pump scan failed:', spotPumpResult.reason instanceof Error ? spotPumpResult.reason.message : 'unknown error');
+    if (futuresOiUnavailable) console.error('Daily Telegram Futures OI scan failed:', futuresOiResult.reason instanceof Error ? futuresOiResult.reason.message : 'unknown error');
     const alphaPumpSignals = alphaPumpUnavailable ? [] : alphaPumpResult.value;
     const spotPumpSignals = spotPumpUnavailable ? [] : spotPumpResult.value;
+    const futuresOiSignals = futuresOiUnavailable ? [] : futuresOiResult.value;
     const appUrl = process.env.APP_URL ?? new URL(request.url).origin;
-    await sendTelegramMessage(formatDailyDigest(alphaLeaders, alphaPumpSignals, spotPumpSignals, appUrl, alphaPumpUnavailable, spotPumpUnavailable));
+    await sendTelegramMessage(formatDailyDigest(alphaLeaders, alphaPumpSignals, spotPumpSignals, futuresOiSignals, appUrl, alphaPumpUnavailable, spotPumpUnavailable, futuresOiUnavailable));
     await redisCommand('SET', lockKey, 'sent', 'EX', String(14 * 24 * 60 * 60));
-    return Response.json({ success: true, alphaTokens: alphaLeaders.length, alphaPumpSignals: alphaPumpSignals.length, spotPumpSignals: spotPumpSignals.length, alphaPumpUnavailable, spotPumpUnavailable });
+    return Response.json({ success: true, alphaTokens: alphaLeaders.length, alphaPumpSignals: alphaPumpSignals.length, spotPumpSignals: spotPumpSignals.length, futuresOiSignals: futuresOiSignals.length, alphaPumpUnavailable, spotPumpUnavailable, futuresOiUnavailable });
   } catch (error) {
     await redisCommand('DEL', lockKey).catch(() => undefined);
     const message = error instanceof Error ? error.message : 'Unable to send daily digest.';

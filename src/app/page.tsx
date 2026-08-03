@@ -5,6 +5,7 @@ import Image from 'next/image';
 import TokenList, { Token } from '../components/TokenList';
 import TokenDetails from '../components/TokenDetails';
 import OnchainAnalysisModal, { OnchainToken } from '../components/OnchainAnalysisModal';
+import FuturesOiScanner from '../components/FuturesOiScanner';
 
 type PumpScanResult = {
   source: MarketTab;
@@ -56,6 +57,7 @@ type PumpScanResult = {
 };
 
 type MarketTab = 'alpha' | 'spot';
+type DashboardTab = MarketTab | 'futures';
 
 type ShakeoutScanResult = {
   source: MarketTab;
@@ -84,7 +86,7 @@ type ShakeoutScanResult = {
 };
 
 export default function Home() {
-  const [marketTab, setMarketTab] = useState<MarketTab>('alpha');
+  const [marketTab, setMarketTab] = useState<DashboardTab>('alpha');
   const [tokens, setTokens] = useState<Token[]>([]);
   const [selectedToken, setSelectedToken] = useState<Token | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -165,6 +167,7 @@ export default function Home() {
   };
 
   const handleScanPump = () => {
+    if (marketTab === 'futures') return;
     setPumpMarket(marketTab);
     setPumpResults(null);
     setPumpScanInfo(null);
@@ -196,6 +199,7 @@ export default function Home() {
   };
 
   const handleScanShakeout = () => {
+    if (marketTab === 'futures') return;
     setShakeoutMarket(marketTab);
     setShakeoutResults(null);
     setShakeoutInfo(null);
@@ -444,19 +448,19 @@ export default function Home() {
             </>
           )}
 
-          <button
-            className="action-btn scan-legacy"
-            onClick={handleScanShakeout}
-            disabled={isShakeoutScanning}
-            style={{
-              background: 'linear-gradient(135deg, rgba(155, 89, 182, 0.2) 0%, rgba(52, 152, 219, 0.14) 100%)',
-              borderColor: '#b18cff',
-              color: '#d4c2ff',
-            }}
-          >
-            <span>🧭</span> Quét cấu trúc {marketTab === 'spot' ? 'Spot' : 'Alpha'}
-          </button>
-          <div style={{ position: 'relative' }}>
+          {marketTab !== 'futures' && <button
+              className="action-btn scan-legacy"
+              onClick={handleScanShakeout}
+              disabled={isShakeoutScanning}
+              style={{
+                background: 'linear-gradient(135deg, rgba(155, 89, 182, 0.2) 0%, rgba(52, 152, 219, 0.14) 100%)',
+                borderColor: '#b18cff',
+                color: '#d4c2ff',
+              }}
+            >
+              <span>🧭</span> Quét cấu trúc {marketTab === 'spot' ? 'Spot' : 'Alpha'}
+            </button>}
+          {marketTab !== 'futures' && <div style={{ position: 'relative' }}>
             <button
               className={`action-btn ${isScanMenuOpen ? 'active' : ''}`}
               onClick={() => setIsScanMenuOpen((open) => !open)}
@@ -473,7 +477,7 @@ export default function Home() {
                 <button className="action-btn" role="menuitem" disabled={isShakeoutScanning} onClick={() => { setIsScanMenuOpen(false); handleScanShakeout(); }} style={{ justifyContent: 'flex-start', border: 0, color: '#d4c2ff' }}>🧭 Quét cấu trúc {marketTab === 'spot' ? 'Spot' : 'Alpha'}</button>
               </div>
             )}
-          </div>
+          </div>}
         </div>
       </header>
 
@@ -500,8 +504,23 @@ export default function Home() {
         >
           Binance Spot / USDT
         </button>
+        <button
+          className="action-btn"
+          onClick={() => setMarketTab('futures')}
+          style={{
+            borderColor: marketTab === 'futures' ? '#f0b90b' : 'var(--border-color)',
+            color: marketTab === 'futures' ? '#ffd166' : 'var(--text-secondary)',
+            background: marketTab === 'futures' ? 'rgba(240, 185, 11, 0.1)' : 'transparent',
+          }}
+        >
+          Futures OI Radar
+        </button>
         <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginLeft: '0.35rem' }}>
-          {marketTab === 'alpha' ? 'Dữ liệu Alpha và các bộ lọc BSC/Futures hiện tại.' : 'Quét toàn bộ cặp Spot đang TRADING có quote asset USDT.'}
+          {marketTab === 'alpha'
+            ? 'Dữ liệu Alpha và các bộ lọc BSC/Futures hiện tại.'
+            : marketTab === 'spot'
+              ? 'Quét toàn bộ cặp Spot đang TRADING có quote asset USDT.'
+              : 'Xếp hạng USDⓈ-M perpetual có Open Interest tăng bất thường.'}
         </span>
       </section>
 
@@ -591,7 +610,7 @@ export default function Home() {
             isLoading={isLoading}
           />
         </div>
-      ) : (
+      ) : marketTab === 'spot' ? (
         <section className="glass-panel" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
           <div>
             <h2 style={{ color: 'var(--text-primary)', fontSize: '1.2rem' }}>Binance Spot — toàn bộ cặp */USDT</h2>
@@ -613,6 +632,8 @@ export default function Home() {
             </button>
           </div>
         </section>
+      ) : (
+        <FuturesOiScanner />
       )}
 
       {/* Selected Token Details & Chart Modal */}
