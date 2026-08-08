@@ -45,6 +45,10 @@ function sign(value: number) {
   return `${value >= 0 ? '+' : ''}${value.toFixed(1)}%`;
 }
 
+function displaySymbol(symbol: string) {
+  return symbol.replace(/USDT$/i, '');
+}
+
 function cronAuthorized(request: Request) {
   const secret = process.env.CRON_SECRET;
   return Boolean(secret && request.headers.get('authorization') === `Bearer ${secret}`);
@@ -96,7 +100,7 @@ function appendPumpSection(lines: string[], title: string, signals: PumpResult[]
     return;
   }
   lines.push(...signals.map((signal, index) =>
-    `${index + 1}. <b>${escapeTelegramHtml(signal.symbol)}</b> · điểm <b>${signal.score.score}</b> · ${escapeTelegramHtml(pumpPhaseLabel(signal.score.phase))} · ${sign(signal.percentChange24h)}`
+    `${index + 1}. <b>${escapeTelegramHtml(displaySymbol(signal.symbol))}</b> · điểm <b>${signal.score.score}</b> · ${escapeTelegramHtml(pumpPhaseLabel(signal.score.phase))} · ${sign(signal.percentChange24h)}`
   ));
 }
 
@@ -111,7 +115,7 @@ function appendFuturesOiSection(lines: string[], signals: FuturesOiResult[], una
     return;
   }
   lines.push(...signals.map((signal, index) =>
-    `${index + 1}. <b>${escapeTelegramHtml(signal.symbol)}</b> · <b>${signal.score}/115</b> · OI ${signal.strongestRatio.toFixed(2)}x · OI/MC ${signal.oiToMarketCapPercent.toFixed(1)}% · MC $${compact(signal.marketCap)}`
+    `${index + 1}. <b>${escapeTelegramHtml(displaySymbol(signal.symbol))}</b> · <b>${signal.score}/115</b> · OI ${signal.strongestRatio.toFixed(2)}x · OI/MC ${signal.oiToMarketCapPercent.toFixed(1)}% · MC $${compact(signal.marketCap)}`
   ));
 }
 
@@ -127,7 +131,7 @@ function formatDailyDigest(
 ) {
   const date = new Intl.DateTimeFormat('vi-VN', { dateStyle: 'full', timeZone: 'Asia/Ho_Chi_Minh' }).format(new Date());
   const lines = [`<b>⚡ Alpha Bot · Tổng hợp hằng ngày</b>`, `<i>${date}</i>`, '', '<b>🔥 Top Binance Alpha theo volume 24h</b>'];
-  lines.push(...alphaLeaders.map((token, index) => `${index + 1}. <b>${escapeTelegramHtml(token.symbol ?? '—')}</b> · ${sign(number(token.percentChange24h))} · volume $${compact(number(token.volume24h))}`));
+  lines.push(...alphaLeaders.map((token, index) => `${index + 1}. <b>${escapeTelegramHtml(displaySymbol(token.symbol ?? '—'))}</b> · ${sign(number(token.percentChange24h))} · volume $${compact(number(token.volume24h))}`));
   appendPumpSection(lines, '🚀 Tín hiệu Pump Binance Alpha', alphaPumpSignals, alphaPumpUnavailable);
   appendPumpSection(lines, '⚡ Tín hiệu Pump Binance Spot / USDT', spotPumpSignals, spotPumpUnavailable);
   appendFuturesOiSection(lines, futuresOiSignals, futuresOiUnavailable);
