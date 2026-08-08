@@ -10,6 +10,7 @@ export const maxDuration = 60;
 
 const BINANCE_ALPHA_URL = 'https://www.binance.com/bapi/defi/v1/public/wallet-direct/buw/wallet/cex/alpha/all/token/list';
 const HEADERS = { 'User-Agent': 'Mozilla/5.0', Accept: 'application/json' };
+const PUMP_SIGNAL_LIMIT = 10;
 
 type AlphaToken = {
   alphaId?: string;
@@ -67,7 +68,7 @@ async function getPumpSignals(market: 'alpha' | 'spot') {
   const response = await runPumpScan(new NextRequest(`https://internal.alpha-bot/api/scan-pump?market=${market}&force=1`));
   const payload = (await response.json()) as { success?: boolean; results?: PumpResult[]; error?: string };
   if (!response.ok || !payload.success) throw new Error(payload.error ?? `Pump scan request failed (${response.status}).`);
-  return (payload.results ?? []).slice(0, 5);
+  return (payload.results ?? []).slice(0, PUMP_SIGNAL_LIMIT);
 }
 
 async function getFuturesOiSignals() {
