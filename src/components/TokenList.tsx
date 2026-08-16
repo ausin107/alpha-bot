@@ -19,6 +19,7 @@ export interface Token {
   totalSupply: string | number;
   circulatingSupply: string | number;
   holders: string | number;
+  hasBinanceSpotUsdt?: boolean;
   iconUrl?: string;
   chainIconUrl?: string;
 }
@@ -78,6 +79,7 @@ export default function TokenList({
 }: TokenListProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedChain, setSelectedChain] = useState<string>('ALL');
+  const [hideSpotUsdt, setHideSpotUsdt] = useState(true);
   const [sortBy, setSortBy] = useState<string>('marketCap');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [copiedId, setCopiedId] = useState<string | null>(null);
@@ -143,7 +145,8 @@ export default function TokenList({
         token.name.toLowerCase().includes(searchQuery.toLowerCase());
       const tokenChain = token.chainName || 'Other';
       const matchesChain = selectedChain === 'ALL' || tokenChain === selectedChain;
-      return matchesSearch && matchesChain;
+      const matchesSpotFilter = !hideSpotUsdt || !token.hasBinanceSpotUsdt;
+      return matchesSearch && matchesChain && matchesSpotFilter;
     })
     .sort((a, b) => {
       let valA = a[sortBy as keyof Token];
@@ -201,6 +204,14 @@ export default function TokenList({
             {chain}
           </button>
         ))}
+        <button
+          type="button"
+          className={`filter-badge ${hideSpotUsdt ? 'active' : ''}`}
+          onClick={() => setHideSpotUsdt((hidden) => !hidden)}
+          title="Ẩn token đã có cặp Spot / USDT đang giao dịch trên Binance"
+        >
+          Chưa có Spot / USDT
+        </button>
       </div>
 
       {/* Table Container */}
