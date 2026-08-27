@@ -39,8 +39,8 @@ function cronAuthorized(request: Request) {
   return Boolean(secret && request.headers.get('authorization') === `Bearer ${secret}`);
 }
 
-async function getPumpSignals(market: 'alpha' | 'spot'): Promise<PumpResult[]> {
-  const response = await runPumpScan(new NextRequest(`https://internal.alpha-bot/api/scan-pump?market=${market}&force=1`));
+async function getAlphaPumpSignals(): Promise<PumpResult[]> {
+  const response = await runPumpScan(new NextRequest('https://internal.alpha-bot/api/scan-pump?market=alpha&force=1'));
   const payload = (await response.json()) as { success?: boolean; results?: PumpResult[]; error?: string };
   if (!response.ok || !payload.success) throw new Error(payload.error ?? `Pump scan request failed (${response.status}).`);
   return payload.results ?? [];
@@ -72,13 +72,13 @@ function formatDailyDigest(
     `<b>⚡ Alpha Bot · Tổng hợp hằng ngày</b>`,
     `<i>${date}</i>`,
     '',
-    `<b>🚀 Top 5 Token Pump Mạnh Nhất</b>`,
+    `<b>🚀 Top 5 Token Binance Alpha Pump Mạnh Nhất</b>`,
   ];
 
   if (pumpUnavailable) {
-    lines.push('⚠️ Bộ quét Pump tạm thời không phản hồi.');
+    lines.push('⚠️ Bộ quét Pump Alpha tạm thời không phản hồi.');
   } else if (topPumpSignals.length === 0) {
-    lines.push('Chưa có tín hiệu Pump vượt ngưỡng hôm nay.');
+    lines.push('Chưa có tín hiệu Binance Alpha Pump vượt ngưỡng hôm nay.');
   } else {
     lines.push(
       ...topPumpSignals.map((signal, index) => {
@@ -118,32 +118,19 @@ export async function GET(request: Request) {
   if (locked !== 'OK') return Response.json({ success: true, skipped: true, reason: 'Daily digest was already sent or is running.' });
 
   try {
-    const [alphaPumpResult, spotPumpResult, wickResult] = await Promise.allSettled([
-      getPumpSignals('alpha'),
-      getPumpSignals('spot'),
+    const [alphaPumpResult, wickResult] = await Promise.allSettled([
+      getAlphaPumpSignals(),
       getWickSignals(),
     ]);
 
     const alphaPumpUnavailable = alphaPumpResult.status === 'rejected';
-    const spotPumpUnavailable = spotPumpResult.status === 'rejected';
     const wickUnavailable = wickResult.status === 'rejected';
 
     if (alphaPumpUnavailable) console.error('Daily Telegram Alpha pump scan failed:', alphaPumpResult.reason instanceof Error ? alphaPumpResult.reason.message : 'unknown error');
-    if (spotPumpUnavailable) console.error('Daily Telegram Spot pump scan failed:', spotPumpResult.reason instanceof Error ? spotPumpResult.reason.message : 'unknown error');
     if (wickUnavailable) console.error('Daily Telegram Wick scan failed:', wickResult.reason instanceof Error ? wickResult.reason.message : 'unknown error');
 
-    const pumpUnavailable = alphaPumpUnavailable && spotPumpUnavailable;
     const alphaPumpSignals = alphaPumpUnavailable ? [] : alphaPumpResult.value;
-    const spotPumpSignals = spotPumpUnavailable ? [] : spotPumpResult.value;
-
-    const uniquePumpMap = new Map<string, PumpResult>();
-    for (const item of [...alphaPumpSignals, ...spotPumpSignals]) {
-      const sym = displaySymbol(item.symbol);
-      if (!uniquePumpMap.has(sym) || (uniquePumpMap.get(sym)!.score.score < item.score.score)) {
-        uniquePumpMap.set(sym, item);
-      }
-    }
-    const allPumpSignals = Array.from(uniquePumpMap.values())
+    const allPumpSignals = alphaPumpSignals
       .sort((a, b) => b.score.score - a.score.score || b.percentChange24h - a.percentChange24h)
       .slice(0, PUMP_TOP_LIMIT);
 
@@ -164,13 +151,13 @@ export async function GET(request: Request) {
       .slice(0, WICK_SIGNAL_LIMIT);
 
     const appUrl = process.env.APP_URL ?? new URL(request.url).origin;
-    await sendTelegramMessage(formatDailyDigest(allPumpSignals, recentWickSignals, appUrl, pumpUnavailable, wickUnavailable));
+    await sendTelegramMessage(formatDailyDigest(allPumpSignals, recentWickSignals, appUrl, alphaPumpUnavailable, wickUnavailable));
     await redisCommand('SET', lockKey, 'sent', 'EX', String(14 * 24 * 60 * 60));
     return Response.json({
       success: true,
       topPumpSignals: allPumpSignals.length,
       recentWickSignals: recentWickSignals.length,
-      pumpUnavailable,
+      alphaPumpUnavailable,
       wickUnavailable,
     });
   } catch (error) {
