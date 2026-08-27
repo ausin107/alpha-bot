@@ -6,6 +6,7 @@ import TokenList, { Token } from '../components/TokenList';
 import TokenDetails from '../components/TokenDetails';
 import OnchainAnalysisModal, { OnchainToken } from '../components/OnchainAnalysisModal';
 import FuturesOiScanner from '../components/FuturesOiScanner';
+import WickScannerView from '../components/WickScannerView';
 
 type PumpScanResult = {
   source: MarketTab;
@@ -57,7 +58,7 @@ type PumpScanResult = {
 };
 
 type MarketTab = 'alpha' | 'spot';
-type DashboardTab = MarketTab | 'futures';
+type DashboardTab = MarketTab | 'futures' | 'wick';
 
 type ShakeoutScanResult = {
   source: MarketTab;
@@ -167,12 +168,12 @@ export default function Home() {
   };
 
   const handleScanPump = () => {
-    if (marketTab === 'futures') return;
-    setPumpMarket(marketTab);
+    const targetMarket: MarketTab = marketTab === 'spot' ? 'spot' : 'alpha';
+    setPumpMarket(targetMarket);
     setPumpResults(null);
     setPumpScanInfo(null);
     setIsPumpScanModalOpen(true);
-    void loadPumpScan(marketTab);
+    void loadPumpScan(targetMarket);
   };
 
   const loadShakeoutScan = async (market: MarketTab, force = false) => {
@@ -199,12 +200,12 @@ export default function Home() {
   };
 
   const handleScanShakeout = () => {
-    if (marketTab === 'futures') return;
-    setShakeoutMarket(marketTab);
+    const targetMarket: MarketTab = marketTab === 'spot' ? 'spot' : 'alpha';
+    setShakeoutMarket(targetMarket);
     setShakeoutResults(null);
     setShakeoutInfo(null);
     setIsShakeoutModalOpen(true);
-    void loadShakeoutScan(marketTab);
+    void loadShakeoutScan(targetMarket);
   };
 
   // Run scan when modal is opened or settings change
@@ -460,7 +461,7 @@ export default function Home() {
             >
               <span>🧭</span> Quét cấu trúc {marketTab === 'spot' ? 'Spot' : 'Alpha'}
             </button>}
-          {marketTab !== 'futures' && <div style={{ position: 'relative' }}>
+          {marketTab !== 'futures' && marketTab !== 'wick' && <div style={{ position: 'relative' }}>
             <button
               className={`action-btn ${isScanMenuOpen ? 'active' : ''}`}
               onClick={() => setIsScanMenuOpen((open) => !open)}
@@ -471,7 +472,8 @@ export default function Home() {
               🔎 Quét <span style={{ fontSize: '0.7rem' }}>▾</span>
             </button>
             {isScanMenuOpen && (
-              <div className="glass-panel" role="menu" style={{ position: 'absolute', right: 0, top: 'calc(100% + 0.5rem)', zIndex: 50, minWidth: '225px', padding: '0.4rem', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+              <div className="glass-panel" role="menu" style={{ position: 'absolute', right: 0, top: 'calc(100% + 0.5rem)', zIndex: 50, minWidth: '240px', padding: '0.4rem', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                <button className="action-btn" role="menuitem" onClick={() => { setIsScanMenuOpen(false); setMarketTab('wick'); }} style={{ justifyContent: 'flex-start', border: 0, color: 'var(--primary-cyan)' }}>🎯 Quét Rút Râu 30D (Alpha + Spot)</button>
                 <button className="action-btn" role="menuitem" disabled={marketTab !== 'alpha' || isLoading} onClick={() => { setIsScanMenuOpen(false); handleScanSideways(); }} style={{ justifyContent: 'flex-start', border: 0, color: 'var(--primary-cyan)' }}>🔍 Quét Sideways</button>
                 <button className="action-btn" role="menuitem" disabled={isPumpScanning || (marketTab === 'alpha' && isLoading)} onClick={() => { setIsScanMenuOpen(false); handleScanPump(); }} style={{ justifyContent: 'flex-start', border: 0, color: '#ffd166' }}>⚡ Quét tín hiệu Pump {marketTab === 'spot' ? 'Spot' : 'Alpha'}</button>
                 <button className="action-btn" role="menuitem" disabled={isShakeoutScanning} onClick={() => { setIsScanMenuOpen(false); handleScanShakeout(); }} style={{ justifyContent: 'flex-start', border: 0, color: '#d4c2ff' }}>🧭 Quét cấu trúc {marketTab === 'spot' ? 'Spot' : 'Alpha'}</button>
@@ -515,12 +517,26 @@ export default function Home() {
         >
           Futures OI Radar
         </button>
+        <button
+          className="action-btn"
+          onClick={() => setMarketTab('wick')}
+          style={{
+            borderColor: marketTab === 'wick' ? 'var(--primary-cyan)' : 'var(--border-color)',
+            color: marketTab === 'wick' ? 'var(--primary-cyan)' : 'var(--text-secondary)',
+            background: marketTab === 'wick' ? 'rgba(0, 242, 254, 0.15)' : 'transparent',
+            fontWeight: marketTab === 'wick' ? 700 : 400,
+          }}
+        >
+          🎯 Quét Rút Râu (30D)
+        </button>
         <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginLeft: '0.35rem' }}>
           {marketTab === 'alpha'
             ? 'Dữ liệu Alpha và các bộ lọc BSC/Futures hiện tại.'
             : marketTab === 'spot'
               ? 'Quét toàn bộ cặp Spot đang TRADING có quote asset USDT.'
-              : 'Xếp hạng USDⓈ-M perpetual có Open Interest tăng bất thường.'}
+              : marketTab === 'futures'
+                ? 'Xếp hạng USDⓈ-M perpetual có Open Interest tăng bất thường.'
+                : 'Quét 30 cây nến ngày gần nhất tìm tín hiệu rút chân / hồi phục từ đáy ≥ 20% trên Alpha & Spot.'}
         </span>
       </section>
 
@@ -630,10 +646,19 @@ export default function Home() {
             >
               {isPumpScanning ? 'Đang quét Pump...' : '⚡ Quét tín hiệu Pump Spot'}
             </button>
+            <button
+              className="action-btn"
+              onClick={() => setMarketTab('wick')}
+              style={{ borderColor: 'var(--primary-cyan)', color: 'var(--primary-cyan)' }}
+            >
+              🎯 Quét Rút Râu 30D
+            </button>
           </div>
         </section>
-      ) : (
+      ) : marketTab === 'futures' ? (
         <FuturesOiScanner />
+      ) : (
+        <WickScannerView onSelectToken={handleSelectToken} />
       )}
 
       {/* Selected Token Details & Chart Modal */}
